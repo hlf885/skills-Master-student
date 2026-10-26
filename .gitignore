@@ -28,3 +28,6 @@ desktop.ini
 output/
 outputs/
 *.bas
+
+# 打包输出
+dist/

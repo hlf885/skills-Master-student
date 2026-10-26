@@ -2,6 +2,12 @@
 
 记录跨 Skill 的变化；单个 Skill 的细节见其目录下的 `CHANGELOG.md`。
 
+## 2026-10-26（二）
+
+### 新增
+- `scripts/package_skill.py`：把 Skill 打包为可上传 claude.ai 的 zip；
+- 仓库管理规范新增“迭代与发布流程”，约定提交作者为仓库所有者本人。
+
 ## 2026-10-26
 
 ### 新增

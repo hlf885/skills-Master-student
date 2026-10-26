@@ -71,3 +71,17 @@ python scripts/validate_skills.py
 - [ ] 项目 `README.md` 与仓库根 `README.md`/`README_EN.md` 的索引已更新；
 - [ ] `python scripts/validate_skills.py` 通过；
 - [ ] 至少用一个真实（已脱敏）案例走通完整流程。
+
+## 8. 迭代与发布流程（保持“安装的版本 = GitHub 最新版”）
+
+GitHub 仓库是唯一的版本来源；claude.ai 上安装的 Skill 是上传时的快照，不会自动同步，因此每次发布都要重新上传。
+
+1. **修改**：在本地克隆（GitHub Desktop 管理）或在已选中本仓库的 Claude 任务里修改 Skill；
+2. **升版本**：同时更新 `SKILL.md` 的 `metadata.version` 和该 Skill 的 `CHANGELOG.md`；
+3. **校验**：`python scripts/validate_skills.py`；
+4. **提交与推送**：提交作者统一为仓库所有者本人的 GitHub 身份（`Hou lingfeng <83017968+hlf885@users.noreply.github.com>`），不添加 AI 共同作者；推送到 `main`；
+5. **打包**：`python scripts/package_skill.py proposal/master-proposal`，生成 `dist/master-proposal-v<版本>.zip`（`dist/` 不入库）；
+6. **重新安装**：claude.ai → 自定义 → Skills → 找到 master-proposal → 用新 zip 替换（或删除后重新上传）；
+7. **核对**：在“我的 Skills”中确认显示的版本说明与 `CHANGELOG.md` 最新条目一致。
+
+Claude Code 本地用户可直接 `git clone` 本仓库并把 Skill 目录链接到 `~/.claude/skills/`，之后 `git pull` 即为最新版。
