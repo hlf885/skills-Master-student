@@ -1,0 +1,122 @@
+{
+  "figure_id": "图2-1",
+  "title": "研究内容框图",
+  "page": {
+    "width_in": 6.3,
+    "height_in": 4.2
+  },
+  "style": {
+    "font_cn": "宋体",
+    "font_en": "Times New Roman",
+    "font_size_pt": 10.5,
+    "line_weight_pt": 0.75,
+    "corner_rounding_in": 0.06
+  },
+  "palette": {
+    "title": "RGB(31,78,121)",
+    "content": "RGB(222,235,247)",
+    "verify": "RGB(226,239,218)",
+    "frame": "RGB(255,255,255)"
+  },
+  "nodes": [
+    {
+      "id": "T",
+      "text": "××场景下××机器人××方法研究",
+      "x": 3.15,
+      "y": 3.75,
+      "w": 4.6,
+      "h": 0.45,
+      "fill": "title",
+      "font_color": "RGB(255,255,255)",
+      "bold": true
+    },
+    {
+      "id": "C1",
+      "text": "（1）××建模研究",
+      "x": 1.0,
+      "y": 2.55,
+      "w": 1.5,
+      "h": 0.8,
+      "fill": "content"
+    },
+    {
+      "id": "C2",
+      "text": "（2）××方法研究",
+      "x": 3.15,
+      "y": 2.55,
+      "w": 1.5,
+      "h": 0.8,
+      "fill": "content"
+    },
+    {
+      "id": "C3",
+      "text": "（3）××策略研究",
+      "x": 5.3,
+      "y": 2.55,
+      "w": 1.5,
+      "h": 0.8,
+      "fill": "content"
+    },
+    {
+      "id": "C4",
+      "text": "（4）系统集成与实验验证",
+      "x": 3.15,
+      "y": 1.05,
+      "w": 4.6,
+      "h": 0.55,
+      "fill": "verify"
+    }
+  ],
+  "groups": [
+    {
+      "id": "G1",
+      "text": "核心方法层",
+      "x": 3.15,
+      "y": 2.6,
+      "w": 6.1,
+      "h": 1.45,
+      "dashed": true,
+      "label_pos": "top-left"
+    }
+  ],
+  "edges": [
+    {
+      "from": "T",
+      "to": "C1"
+    },
+    {
+      "from": "T",
+      "to": "C2"
+    },
+    {
+      "from": "T",
+      "to": "C3"
+    },
+    {
+      "from": "C1",
+      "to": "C2",
+      "label": "风险信息"
+    },
+    {
+      "from": "C2",
+      "to": "C3",
+      "label": "候选轨迹"
+    },
+    {
+      "from": "C1",
+      "to": "C4"
+    },
+    {
+      "from": "C2",
+      "to": "C4"
+    },
+    {
+      "from": "C3",
+      "to": "C4"
+    }
+  ],
+  "export": {
+    "emf": true,
+    "png_dpi": 300
+  }
+}
