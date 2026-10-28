@@ -53,6 +53,8 @@ METHOD_HINTS = [
     "采用", "利用", "借助", "通过", "算法", "公式", "Unity", "ROS", "MATLAB", "Matlab", "Python",
     "SolidWorks", "Gazebo", "神经网络", "损失函数", "奖励函数", "卡尔曼", "RRT", "PPO", "SAC",
 ]
+PM_WORDS = ["项目方", "降级", "退路", "人·月", "人月", "难度最大", "难度较低", "项目进度", "设备进度"]
+BACKGROUND_WATCH = ["遥操作"]
 DONE_WORDS = ["实现了", "验证了", "证明了", "取得了", "达到了", "完成了"]
 REF_TYPE = re.compile(r"\[(J|C|M|D|R|S|P|N|A|G|Z|EB/OL|J/OL|M/OL|C/OL|D/OL|DB/OL|CP/OL)\]")
 
@@ -217,6 +219,9 @@ def main() -> int:
     if ref_key:
         text_wo_refs = md.replace(by_key[ref_key][2], "")
     text_wo_refs = re.sub(r"<!--.*?-->", "", text_wo_refs, flags=re.S)
+    # 公式中的区间（如 s∈[0,1]）不是引用：先去掉行间与行内公式
+    text_wo_refs = re.sub(r"\$\$.*?\$\$", "", text_wo_refs, flags=re.S)
+    text_wo_refs = re.sub(r"\$[^$\n]+\$", "", text_wo_refs)
     cites = []
     for m in re.finditer(r"\^?\[(\d+(?:\s*[-–—~,，]\s*\d+)*)\]\^?", text_wo_refs):
         cites.extend(expand_cites(m.group(1)))
@@ -288,7 +293,9 @@ def main() -> int:
 
     # ---------- 称谓、时态、套话、错别字 ----------
     plain = strip_md(text_wo_refs)
-    voices = {w: plain.count(w) for w in ("本文", "本课题", "本研究", "我们")}
+    # 学校模板的栏目名“四、本研究课题可能的创新之处”不计入称谓统计
+    plain_voice = re.sub(r"本研究课题可能的创新之处", "", plain)
+    voices = {w: plain_voice.count(w) for w in ("本文", "本课题", "本研究", "我们")}
     used = [w for w, c in voices.items() if c]
     if len(used) > 1:
         warn(f"称谓混用：{ {w: voices[w] for w in used} }，建议统一为“本课题”或“本研究”。")
@@ -308,6 +315,23 @@ def main() -> int:
         err(f"疑似错别字：{typo}")
     if re.search(r"[\u4e00-\u9fff][,;:?!][\u4e00-\u9fff]", plain):
         warn("中文正文中出现半角标点（, ; : ? !）。")
+
+    # ---------- 可行性分析（学生视角、学术研究） ----------
+    feas_key = next((k for k, (l, t, b) in by_key.items() if k.startswith("3.") and "可行性" in t), None)
+    if feas_key:
+        fb = by_key[feas_key][2]
+        if re.search(r"\^\[\d", fb):
+            warn("3.3 可行性分析中出现文献引用：可行性分析写本人的理论基础、技术储备和研究条件，不需要引用文献。")
+        pm = [w for w in PM_WORDS if w in fb]
+        if pm:
+            warn(f"3.3 可行性分析含项目管理式表述 {pm}：开题是学术研究，难度分级、降级退路、谁提供数据等放在内部评估表，不写进正文。")
+        if not re.search(r"理论基础", fb) or not re.search(r"技术储备|技术基础", fb) or not re.search(r"研究条件|工作条件", fb):
+            warn("3.3 可行性分析建议按“理论基础—技术储备—研究条件”三方面展开，并以学生本人的视角写。")
+    tech = by_key.get("1.1", (0, "", ""))[2] + by_key.get("1.2", (0, "", ""))[2]
+    for w in BACKGROUND_WATCH:
+        n = tech.count(w)
+        if n >= 8:
+            warn(f"立题依据中“{w}”出现 {n} 次：若课题本身不研究它，应弱化为背景并说明研究边界，避免专家误判研究方向。")
 
     # ---------- 第五部分 ----------
     if "五" in by_key:

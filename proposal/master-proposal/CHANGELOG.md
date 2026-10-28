@@ -2,6 +2,25 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [1.1.0] - 2026-10-28
+
+依据一次真实开题初稿的审阅意见迭代。
+
+### 新增
+- `SKILL.md`：硬性规则 9（学术研究而非项目，背景内容弱化并写明边界，可行性分析不引用文献、不写项目管理内容）、规则 10（图片原图逐张插入，禁止截屏拼接）、规则 11（每轮修改另存新版本并累积更新《修改记录表》）；新增阶段 10“按意见修改与修改记录表”。
+- `assets/figure-spec-research-content.json`：分层研究内容框图示例（发现问题→研究目标→研究内容→关键问题，黄蓝虚线分层，重点词标红）。
+- `scripts/visio_macro.py`：节点边框色 `stroke`、重点词标红 `red`、纯文字标签 `no_border`、单节点字号 `font_pt`、分组框颜色、连线颜色；`--png` 直接渲染预览图；SVG 预览支持多行文字、颜色与标红。
+- `scripts/check_proposal.py`：检查 3.3 可行性分析中的文献引用与项目管理式用语；提示立题依据中被过度展开的背景概念。
+
+### 修改
+- `references/02-section-guide.md`：2.1 研究内容框图改为分层结构；3.3 可行性分析改为学生视角的“理论基础—技术储备—研究条件”写法，并列出禁止事项。
+- `references/05-research-plan-figures-formulas.md`：统一配色方案；插图方式改为原图逐张插入；补充图规格新字段说明。
+- `references/07-style-deai-defensive.md`：新增“学术研究的口吻，而不是项目口吻”与背景边界要求。
+- `references/10-common-mistakes.md`：新增第 30–33 条。
+
+### 修复
+- `scripts/check_proposal.py`：公式中的区间（如 `[0,1]`）不再被误判为文献引用；模板栏目名“本研究课题可能的创新之处”不再计入称谓混用。
+
 ## [1.0.0] - 2026-10-26
 
 ### 新增

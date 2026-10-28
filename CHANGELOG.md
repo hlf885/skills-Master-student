@@ -2,6 +2,11 @@
 
 记录跨 Skill 的变化；单个 Skill 的细节见其目录下的 `CHANGELOG.md`。
 
+## 2026-10-28
+
+### 修改
+- `proposal/master-proposal` 升级到 v1.1.0：依据一次开题初稿的审阅意见，新增“学术研究而非项目”“原图逐张插入”“修改记录表”三条硬性规则与阶段 10；研究内容框图改为分层结构并统一配色；可行性分析改为学生视角；`visio_macro.py`、`check_proposal.py` 相应增强。详见该 Skill 的 `CHANGELOG.md`。
+
 ## 2026-10-26（二）
 
 ### 新增

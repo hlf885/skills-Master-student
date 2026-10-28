@@ -6,7 +6,7 @@ description: >-
   （Visio 作图 + MathType 公式）、创新点、工作计划、GB/T 7714 参考文献（56–66 条）、去 AI 味与预判式写作，
   以及给非本领域答辩专家看的通俗讲解稿。Use for Chinese master's thesis proposal (开题报告) writing.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   repository: "https://github.com/hlf885/skills-Master-student"
   project: "proposal"
 ---
@@ -27,6 +27,9 @@ metadata:
 6. **区分研究内容与研究方案。** 研究内容只说“做什么”，每项浓缩为一句核心话、约 4–5 行，环环相扣、与题目相切；“怎么做”全部放到第三部分。
 7. **字数对标模板。** 各部分字数与 `references/02-section-guide.md` 中的基准相差不大，并满足表格中的“不少于”要求。
 8. **研究诚信。** 不虚构实验结果、成果、获奖、项目编号；不把“拟”写成“已”；引用图片须清晰、无水印、注明来源。
+9. **这是学术研究，不是做项目。** 全文围绕“要探索的新问题、新方法”展开；立题依据中依托项目的作业方式、设备控制方式等只作铺垫，课题不研究的内容要弱化并写明研究边界；可行性分析以学生视角写理论基础、技术储备、研究条件，不引用文献，不写难度分级、退路、谁提供数据等项目管理内容（细则见 `references/02-section-guide.md` 3.3 节与 `references/07-style-deai-defensive.md` 第五节）。
+10. **图片用原图逐张插入。** 项目资料、文献、网页中的图片取原始文件直接插入，不截屏拼接、不重采样；多子图用无边框表格并排，子图题用文字。
+11. **每次修改都有修改记录表。** 用户提出修改意见后，按意见修改并另存新版本（不覆盖旧稿），同时输出《修改记录表》（序号、日期、版本、问题来源、问题描述、修改位置、修改内容、需用户确认事项）；之后每一轮修改都在同一张表末尾追加，不另起新表。
 
 ## 工作流程
 
@@ -73,7 +76,8 @@ metadata:
 ### 阶段 6　作图、公式与图片
 
 - 作图前先说：“请先打开 Microsoft Visio 和 MathType（Word 中出现 MathType 选项卡）。打开后告诉我。”收到确认后再进行。
-- 有电脑操控能力时，直接在 Visio 中绘制；没有时，用 `scripts/visio_macro.py` 由图规格生成 Visio VBA 宏，让用户一键生成可编辑的 Visio 图。
+- 有电脑操控能力时，直接在 Visio 中绘制；没有时，用 `scripts/visio_macro.py` 由图规格生成 Visio VBA 宏，让用户一键生成可编辑的 Visio 图（`--png` 同时生成插入 Word 用的预览图）。
+- 研究内容框图（图2-1）用分层结构：发现问题 → 研究目标 → 研究内容 → 关键问题，黄蓝虚线分层、重点词标红，示例见 `assets/figure-spec-research-content.json`；全文各图采用 `references/05-research-plan-figures-formulas.md` 中的统一配色。
 - 公式先以 Word 公式写入，再用 MathType 的“Convert Equations”批量转为 MathType 对象；或提供 LaTeX 由 MathType 直接转换。编号格式统一为（3-1）。
 - 场景/实物/代表性工作的图片：按 `references/05-research-plan-figures-formulas.md` 的“图片获取与无水印核查”执行，记录来源，不擦除他人水印。
 
@@ -93,6 +97,12 @@ metadata:
 - `scripts/build_docx.py` 可把 Markdown 稿（按 `assets/proposal-skeleton.md` 的格式）转为排版好的 .docx（宋体/Times New Roman 五号、1.5 倍行距、首行缩进 2 字符、引用上标、公式为 Word 公式并自动右对齐编号）。
 - 交付消息中**再次醒目提醒**：第五部分需用户本人撰写；量化指标、项目名称、平台参数请用户最终核对。
 
+### 阶段 10　按意见修改与修改记录表
+
+- 逐条阅读用户的修改意见（含截图批注），先判断每条意见涉及的全部位置，不只改截图里的那一段；同类问题全文排查（如弱化某一背景概念时，统计全文出现次数并逐处处理）。
+- 修改后另存新版本，运行自检脚本与渲染检查；需要用户核实的个人情况用黄色底纹标出。
+- 输出并持续更新《修改记录表》（硬性规则 11）；若意见涉及本 Skill 的规范问题，同步更新 `references/` 与 `CHANGELOG.md`。
+
 ## 参考文件索引
 
 | 文件 | 何时读 |
@@ -106,6 +116,6 @@ metadata:
 | `references/07-style-deai-defensive.md` | 全程写作与自审 |
 | `references/08-socratic-review.md` | 阶段 2 与阶段 7 |
 | `references/09-template-benchmarks.md` | 需要字数、篇幅、插图数量等量化基准时 |
-| `references/10-common-mistakes.md` | 阶段 7 自审 |
-| `assets/` | 资料清单、全文骨架（Markdown 写作格式）、答辩稿模板、Visio 图规格示例 |
+| `references/10-common-mistakes.md` | 阶段 7 自审、阶段 10 修改 |
+| `assets/` | 资料清单、全文骨架（Markdown 写作格式）、答辩稿模板、Visio 图规格示例（含分层研究内容框图 `figure-spec-research-content.json`） |
 | `scripts/` | `check_proposal.py` 自审；`build_docx.py` Markdown→docx；`visio_macro.py` 图规格→Visio 宏（附 SVG 预览） |

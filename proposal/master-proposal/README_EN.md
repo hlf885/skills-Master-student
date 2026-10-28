@@ -17,6 +17,7 @@ A skill for writing Chinese engineering master's thesis proposals (开题报告)
 | 7 Self-review | Script checks + checklist + de-templating + anticipatory writing | Section lengths benchmarked against templates |
 | 8 Defense brief | Plain-language 3–5 minute script with apt metaphors + 10 likely questions | No unexplained jargon |
 | 9 Delivery | .docx, reference verification table, figure sources, defense brief, review report | **Section 5 (research foundation) is written by the student** |
+| 10 Revision | Handle reviewer comments item by item, check the whole text for the same issue, save a new version | **Keep one cumulative revision log (修改记录表)** |
 
 ## Install
 

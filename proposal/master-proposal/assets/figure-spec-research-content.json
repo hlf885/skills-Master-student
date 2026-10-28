@@ -1,0 +1,391 @@
+{
+ "figure_id": "图2-1",
+ "title": "研究内容框图（分层模板：发现问题→研究目标→研究内容→关键问题）",
+ "page": {
+  "width_in": 6.3,
+  "height_in": 5.37
+ },
+ "nodes": [
+  {
+   "id": "T",
+   "text": "基于××的××场景××机器人××方法研究",
+   "x": 3.45,
+   "y": 5.07,
+   "w": 4.4,
+   "h": 0.38,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true
+  },
+  {
+   "id": "LP",
+   "text": "发现\n问题",
+   "x": 0.42,
+   "y": 4.37,
+   "w": 0.5,
+   "h": 0.6,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 15
+  },
+  {
+   "id": "LG",
+   "text": "研究\n目标",
+   "x": 0.42,
+   "y": 3.07,
+   "w": 0.5,
+   "h": 0.6,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 15
+  },
+  {
+   "id": "LC",
+   "text": "研究\n内容",
+   "x": 0.42,
+   "y": 1.67,
+   "w": 0.5,
+   "h": 0.6,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 15
+  },
+  {
+   "id": "LK",
+   "text": "关键\n问题",
+   "x": 0.42,
+   "y": 0.57,
+   "w": 0.5,
+   "h": 0.6,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 15
+  },
+  {
+   "id": "P1",
+   "text": "现状痛点一\n（重点词标红）",
+   "x": 1.75,
+   "y": 4.37,
+   "w": 1.6,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true,
+   "red": [
+    "重点词标红"
+   ],
+   "font_px": 12
+  },
+  {
+   "id": "P2",
+   "text": "现状痛点二\n方法不适用之处",
+   "x": 3.45,
+   "y": 4.37,
+   "w": 1.6,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true,
+   "red": [],
+   "font_px": 12
+  },
+  {
+   "id": "P3",
+   "text": "现状痛点三\n工况变化",
+   "x": 5.15,
+   "y": 4.37,
+   "w": 1.6,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true,
+   "red": [],
+   "font_px": 12
+  },
+  {
+   "id": "G0",
+   "text": "在××中实现××的自动生成、筛选与验证",
+   "x": 3.45,
+   "y": 3.49,
+   "w": 4.6,
+   "h": 0.34,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true,
+   "red": [
+    "自动生成",
+    "筛选",
+    "验证"
+   ]
+  },
+  {
+   "id": "S1",
+   "text": "分目标一",
+   "x": 1.42,
+   "y": 2.77,
+   "w": 1.25,
+   "h": 0.5,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true
+  },
+  {
+   "id": "S2",
+   "text": "分目标二",
+   "x": 2.79,
+   "y": 2.77,
+   "w": 1.25,
+   "h": 0.5,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true
+  },
+  {
+   "id": "S3",
+   "text": "分目标三",
+   "x": 4.16,
+   "y": 2.77,
+   "w": 1.25,
+   "h": 0.5,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true
+  },
+  {
+   "id": "S4",
+   "text": "分目标四",
+   "x": 5.53,
+   "y": 2.77,
+   "w": 1.25,
+   "h": 0.5,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true
+  },
+  {
+   "id": "C1",
+   "text": "研究内容一\n××建模",
+   "x": 1.42,
+   "y": 1.67,
+   "w": 1.25,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true,
+   "red": [
+    "建模"
+   ]
+  },
+  {
+   "id": "C2",
+   "text": "研究内容二\n××方法",
+   "x": 2.79,
+   "y": 1.67,
+   "w": 1.25,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true,
+   "red": [
+    "方法"
+   ]
+  },
+  {
+   "id": "C3",
+   "text": "研究内容三\n××策略",
+   "x": 4.16,
+   "y": 1.67,
+   "w": 1.25,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true,
+   "red": [
+    "策略"
+   ]
+  },
+  {
+   "id": "C4",
+   "text": "××环境下的\n实验验证",
+   "x": 5.53,
+   "y": 1.67,
+   "w": 1.25,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true,
+   "red": [
+    "实验验证"
+   ]
+  },
+  {
+   "id": "K1",
+   "text": "关键问题一",
+   "x": 1.42,
+   "y": 0.57,
+   "w": 1.25,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true
+  },
+  {
+   "id": "K2",
+   "text": "关键问题二",
+   "x": 2.79,
+   "y": 0.57,
+   "w": 1.25,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true
+  },
+  {
+   "id": "K3",
+   "text": "关键问题三",
+   "x": 4.16,
+   "y": 0.57,
+   "w": 1.25,
+   "h": 0.55,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "bold": true
+  }
+ ],
+ "groups": [
+  {
+   "id": "GP",
+   "text": "",
+   "x": 3.18,
+   "y": 4.37,
+   "w": 6.1,
+   "h": 0.82,
+   "dashed": true,
+   "stroke": "yellow_dash"
+  },
+  {
+   "id": "GG",
+   "text": "",
+   "x": 3.18,
+   "y": 3.11,
+   "w": 6.1,
+   "h": 1.38,
+   "dashed": true,
+   "stroke": "blue_dash"
+  },
+  {
+   "id": "GC",
+   "text": "",
+   "x": 3.18,
+   "y": 1.67,
+   "w": 6.1,
+   "h": 0.82,
+   "dashed": true,
+   "stroke": "blue_dash"
+  },
+  {
+   "id": "GK",
+   "text": "",
+   "x": 3.18,
+   "y": 0.57,
+   "w": 6.1,
+   "h": 0.82,
+   "dashed": true,
+   "stroke": "yellow_dash"
+  }
+ ],
+ "edges": [
+  {
+   "from": "T",
+   "to": "P2"
+  },
+  {
+   "from": "P1",
+   "to": "G0"
+  },
+  {
+   "from": "P2",
+   "to": "G0"
+  },
+  {
+   "from": "P3",
+   "to": "G0"
+  },
+  {
+   "from": "G0",
+   "to": "S1"
+  },
+  {
+   "from": "G0",
+   "to": "S2"
+  },
+  {
+   "from": "G0",
+   "to": "S3"
+  },
+  {
+   "from": "G0",
+   "to": "S4"
+  },
+  {
+   "from": "S1",
+   "to": "C1"
+  },
+  {
+   "from": "S2",
+   "to": "C2"
+  },
+  {
+   "from": "S3",
+   "to": "C3"
+  },
+  {
+   "from": "S4",
+   "to": "C4"
+  },
+  {
+   "from": "C1",
+   "to": "K1"
+  },
+  {
+   "from": "C2",
+   "to": "K2"
+  },
+  {
+   "from": "C3",
+   "to": "K3"
+  }
+ ],
+ "style": {
+  "font_cn": "宋体",
+  "font_en": "Times New Roman",
+  "font_size_pt": 9,
+  "line_weight_pt": 1.0,
+  "corner_rounding_in": 0.06,
+  "edge_color": "arrow",
+  "preview_font_px": 12.5
+ },
+ "palette": {
+  "blue_fill": "RGB(221,235,247)",
+  "blue_line": "RGB(46,117,182)",
+  "peach_fill": "RGB(251,229,214)",
+  "orange_line": "RGB(237,125,49)",
+  "yellow_dash": "RGB(255,192,0)",
+  "blue_dash": "RGB(0,112,192)",
+  "label": "RGB(31,56,100)",
+  "arrow": "RGB(47,85,151)",
+  "white": "RGB(255,255,255)",
+  "green_fill": "RGB(226,239,218)",
+  "green_line": "RGB(112,173,71)",
+  "grey_fill": "RGB(242,242,242)",
+  "grey_line": "RGB(127,127,127)"
+ },
+ "export": {
+  "emf": true,
+  "png_dpi": 300
+ }
+}

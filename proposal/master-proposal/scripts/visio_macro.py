@@ -10,10 +10,15 @@ connectors with arrows and labels). All non-ASCII text is emitted with ChrW() so
 macro imports correctly regardless of the Windows code page.
 
 Spec format: see ../assets/figure-spec-example.json
-  nodes:  id, text, x, y (centre, inches, origin bottom-left), w, h, fill (palette key or RGB(...)),
-          optional font_color, bold
-  groups: id, text, x, y, w, h, dashed, label_pos (top-left | top-center)
-  edges:  from, to, optional label
+  nodes:  id, text ("\n" = line break), x, y (centre, inches, origin bottom-left), w, h,
+          fill / stroke / font_color (palette key or RGB(...)), bold, font_pt,
+          red (list of substrings drawn in red, for key words), no_border (text-only label)
+  groups: id, text, x, y, w, h, dashed, stroke (frame colour), label_pos (top-left | top-center)
+  edges:  from, to, optional label, color; via (preview routing only), vlabel (vertical preview label)
+  style:  font_size_pt, line_weight_pt, corner_rounding_in, edge_color, preview_font_px
+
+Optional --png renders the preview to a 300 dpi-class PNG (needs Playwright + Chromium) for
+inserting into Word while the editable Visio version is being prepared.
 """
 from __future__ import annotations
 
@@ -22,6 +27,7 @@ import json
 import re
 import sys
 from pathlib import Path
+import html
 from xml.sax.saxutils import escape
 
 
@@ -108,24 +114,32 @@ def build_macro(spec: dict) -> str:
         vb_assign(L, "txt", g.get("text", ""))
         a(
             f"    Set {v} = MakeFrame(doc, pg, {g['x']}, {g['y']}, {g['w']}, {g['h']}, txt, "
-            f"{'True' if g.get('dashed', True) else 'False'}, {'True' if g.get('label_pos', 'top-left') == 'top-left' else 'False'}, {size}, {lw})"
+            f"{'True' if g.get('dashed', True) else 'False'}, {'True' if g.get('label_pos', 'top-left') == 'top-left' else 'False'}, {size}, {lw}, "
+            f'"{color(spec, g.get("stroke"), "RGB(0,0,0)")}")'
         )
     for n in spec.get("nodes", []):
         v = vb_ident(n["id"])
         fill = color(spec, n.get("fill"), "RGB(255,255,255)")
         fc = color(spec, n.get("font_color"), "RGB(0,0,0)")
+        lc = color(spec, n.get("stroke"), "RGB(0,0,0)")
+        fsz = float(n.get("font_pt", size))
         a(f"    Dim {v} As Visio.Shape")
         vb_assign(L, "txt", n.get("text", ""))
         a(
             f"    Set {v} = MakeBox(doc, pg, {n['x']}, {n['y']}, {n['w']}, {n['h']}, txt, "
-            f'"{fill}", "{fc}", {"True" if n.get("bold") else "False"}, {size}, {lw}, {rnd})'
+            f'"{fill}", "{fc}", {"True" if n.get("bold") else "False"}, {fsz}, {lw}, {rnd}, "{lc}", '
+            f'{"True" if n.get("no_border") else "False"})'
         )
+        for k, sub in enumerate(n.get("red", [])):
+            vb_assign(L, "lbl", sub)
+            a(f"    Highlight {v}, lbl")
     ids = {n["id"] for n in spec.get("nodes", [])}
     for e in spec.get("edges", []):
         if e["from"] not in ids or e["to"] not in ids:
             raise ValueError(f"edge refers to unknown node: {e}")
         vb_assign(L, "lbl", e.get("label", ""))
-        a(f"    Connect doc, pg, {vb_ident(e['from'])}, {vb_ident(e['to'])}, lbl, {size}, {lw}")
+        ec = color(spec, e.get("color") or st.get("edge_color"), "RGB(0,0,0)")
+        a(f'    Connect doc, pg, {vb_ident(e["from"])}, {vb_ident(e["to"])}, lbl, {size}, {lw}, "{ec}"')
     a("    ActiveWindow.ViewFit = visFitPage")
     a("End Sub")
     a("")
@@ -139,7 +153,8 @@ def build_macro(spec: dict) -> str:
     a("")
     a(
         "Private Function MakeBox(doc As Visio.Document, pg As Visio.Page, cx As Double, cy As Double, w As Double, h As Double, "
-        "txt As String, fillRGB As String, fontRGB As String, isBold As Boolean, sizePt As Double, lwPt As Double, rnd As Double) As Visio.Shape"
+        "txt As String, fillRGB As String, fontRGB As String, isBold As Boolean, sizePt As Double, lwPt As Double, rnd As Double, "
+        "lineRGB As String, noBorder As Boolean) As Visio.Shape"
     )
     a("    Dim shp As Visio.Shape")
     a("    Set shp = pg.DrawRectangle(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2)")
@@ -148,6 +163,11 @@ def build_macro(spec: dict) -> str:
     a('    shp.CellsU("FillPattern").FormulaU = "1"')
     a('    shp.CellsU("LineWeight").FormulaU = CStr(lwPt) & " pt"')
     a('    shp.CellsU("Rounding").FormulaU = CStr(rnd) & " in"')
+    a('    shp.CellsU("LineColor").FormulaU = lineRGB')
+    a('    If noBorder Then')
+    a('        shp.CellsU("LinePattern").FormulaU = "0"')
+    a('        shp.CellsU("FillPattern").FormulaU = "0"')
+    a('    End If')
     a('    shp.CellsU("Char.Color").FormulaU = fontRGB')
     a('    If isBold Then shp.CellsU("Char.Style").FormulaU = "1"')
     a("    ApplyFont doc, shp, sizePt")
@@ -156,7 +176,7 @@ def build_macro(spec: dict) -> str:
     a("")
     a(
         "Private Function MakeFrame(doc As Visio.Document, pg As Visio.Page, cx As Double, cy As Double, w As Double, h As Double, "
-        "txt As String, dashed As Boolean, leftLabel As Boolean, sizePt As Double, lwPt As Double) As Visio.Shape"
+        "txt As String, dashed As Boolean, leftLabel As Boolean, sizePt As Double, lwPt As Double, lineRGB As String) As Visio.Shape"
     )
     a("    Dim shp As Visio.Shape")
     a("    Set shp = pg.DrawRectangle(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2)")
@@ -164,6 +184,8 @@ def build_macro(spec: dict) -> str:
     a('    shp.CellsU("FillPattern").FormulaU = "0"')
     a('    shp.CellsU("LineWeight").FormulaU = CStr(lwPt) & " pt"')
     a('    If dashed Then shp.CellsU("LinePattern").FormulaU = "2"')
+    a('    shp.CellsU("LineColor").FormulaU = lineRGB')
+    a('    shp.CellsU("Rounding").FormulaU = "0.08 in"')
     a('    shp.CellsU("VerticalAlign").FormulaU = "0"')
     a('    If leftLabel Then shp.CellsU("Para.HorzAlign").FormulaU = "0"')
     a("    ApplyFont doc, shp, sizePt")
@@ -171,74 +193,145 @@ def build_macro(spec: dict) -> str:
     a("    Set MakeFrame = shp")
     a("End Function")
     a("")
-    a("Private Sub Connect(doc As Visio.Document, pg As Visio.Page, a As Visio.Shape, b As Visio.Shape, label As String, sizePt As Double, lwPt As Double)")
+    a("Private Sub Highlight(shp As Visio.Shape, s As String)")
+    a("    ' colour every occurrence of s in red (key words)")
+    a("    Dim pos As Long")
+    a("    Dim chars As Visio.Characters")
+    a("    If Len(s) = 0 Then Exit Sub")
+    a("    pos = InStr(1, shp.Characters.Text, s)")
+    a("    Do While pos > 0")
+    a("        Set chars = shp.Characters")
+    a("        chars.Begin = pos - 1")
+    a("        chars.End = pos - 1 + Len(s)")
+    a("        chars.CharProps(visCharacterColor) = 2")
+    a("        pos = InStr(pos + Len(s), shp.Characters.Text, s)")
+    a("    Loop")
+    a("End Sub")
+    a("")
+    a("Private Sub Connect(doc As Visio.Document, pg As Visio.Page, a As Visio.Shape, b As Visio.Shape, label As String, sizePt As Double, lwPt As Double, lineRGB As String)")
     a("    Dim con As Visio.Shape")
     a("    Set con = pg.Drop(Application.ConnectorToolDataObject, 0, 0)")
     a('    con.CellsU("BeginX").GlueTo a.CellsU("PinX")')
     a('    con.CellsU("EndX").GlueTo b.CellsU("PinX")')
     a('    con.CellsU("EndArrow").FormulaU = "13"')
     a('    con.CellsU("LineWeight").FormulaU = CStr(lwPt) & " pt"')
+    a('    con.CellsU("LineColor").FormulaU = lineRGB')
     a("    If Len(label) > 0 Then con.Text = label")
     a("    ApplyFont doc, con, sizePt - 1")
     a("End Sub")
     return "\r\n".join(L) + "\r\n"
 
 
+DPI = 96
+
+
+def col(pal,key,default):
+    v=pal.get(key,key) if key else default
+    m=re.fullmatch(r"RGB\((\d+),(\d+),(\d+)\)",(v or default).replace(' ',''))
+    return f"rgb({m.group(1)},{m.group(2)},{m.group(3)})" if m else 'none'
+def spans(line,reds,base):
+    if not reds: return html.escape(line)
+    pat='('+'|'.join(re.escape(r) for r in sorted(reds,key=len,reverse=True))+')'
+    out=[]
+    for part in re.split(pat,line):
+        if not part: continue
+        if part in reds: out.append(f'<tspan fill="rgb(255,0,0)">{html.escape(part)}</tspan>')
+        else: out.append(html.escape(part))
+    return ''.join(out)
 def build_svg(spec: dict) -> str:
-    page = spec.get("page", {"width_in": 6.3, "height_in": 4.2})
-    W, H = float(page["width_in"]) * 96, float(page["height_in"]) * 96
-    pal = spec.get("palette", {})
+    W=spec['page']['width_in'];H=spec['page']['height_in'];pal=spec['palette'];st=spec.get('style',{})
+    fpx=st.get('preview_font_px',13.5);ecol=col(pal,st.get('edge_color'),'RGB(0,0,0)')
+    X=lambda x:x*DPI; Y=lambda y:(H-y)*DPI
+    o=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{W*DPI:.0f}" height="{H*DPI:.0f}" font-family="Times New Roman, Noto Serif CJK SC" font-size="{fpx}">',
+       f'<defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,4 L0,8 z" fill="{ecol}"/></marker></defs>',
+       '<rect width="100%" height="100%" fill="white"/>']
+    for g in spec.get('groups',[]):
+        x=X(g['x']-g['w']/2);y=Y(g['y']+g['h']/2);sc=col(pal,g.get('stroke'),'RGB(68,68,68)')
+        dash='stroke-dasharray="7,4"' if g.get('dashed',True) else ''
+        o.append(f'<rect x="{x}" y="{y}" width="{g["w"]*DPI}" height="{g["h"]*DPI}" rx="8" fill="{col(pal,g.get("fill"),"none") if g.get("fill") else "none"}" stroke="{sc}" stroke-width="{g.get("stroke_px",1.6)}" {dash}/>')
+        if g.get('text'): o.append(f'<text x="{x+6}" y="{y+16}" font-size="12.5" fill="#333">{html.escape(g["text"])}</text>')
+    nodes={n['id']:n for n in spec['nodes']}
+    def rect(n): return (n['x']-n['w']/2,n['x']+n['w']/2,n['y']-n['h']/2,n['y']+n['h']/2)
+    def clip(n,px,py):
+        cx,cy=n['x'],n['y'];dx,dy=px-cx,py-cy
+        if dx==0 and dy==0: return cx,cy
+        tx=(n['w']/2)/abs(dx) if dx else 1e9; ty=(n['h']/2)/abs(dy) if dy else 1e9
+        t=min(tx,ty);return cx+dx*t,cy+dy*t
+    labels=[];lines=[]
+    for e in spec['edges']:
+        a,b=nodes[e['from']],nodes[e['to']];via=e.get('via');c=col(pal,e.get('color') or st.get('edge_color'),'RGB(0,0,0)')
+        if via:
+            pts=[clip(a,*via[0])]+[tuple(v) for v in via]+[clip(b,*via[-1])]
+        else:
+            ax0,ax1,ay0,ay1=rect(a);bx0,bx1,by0,by1=rect(b)
+            ox0,ox1=max(ax0,bx0),min(ax1,bx1);oy0,oy1=max(ay0,by0),min(ay1,by1)
+            if ox1-ox0>0.15:
+                if ox0<=b['x']<=ox1: xm=b['x']
+                elif ox0<=a['x']<=ox1: xm=a['x']
+                else: xm=(ox0+ox1)/2
+                pts=[(xm,ay0),(xm,by1)] if a['y']>b['y'] else [(xm,ay1),(xm,by0)]
+            elif oy1-oy0>0.15:
+                ym=b['y'] if oy0<=b['y']<=oy1 else (a['y'] if oy0<=a['y']<=oy1 else (oy0+oy1)/2)
+                pts=[(ax1,ym),(bx0,ym)] if a['x']<b['x'] else [(ax0,ym),(bx1,ym)]
+            else:
+                pts=[clip(a,b['x'],b['y']),clip(b,a['x'],a['y'])]
+        d=' '.join(f'{X(px):.1f},{Y(py):.1f}' for px,py in pts)
+        lines.append(f'<polyline points="{d}" fill="none" stroke="{c}" stroke-width="1.3" marker-end="url(#arr)"/>')
+        if e.get('label'):
+            segs=list(zip(pts,pts[1:]));s=max(segs,key=lambda s:abs(s[0][0]-s[1][0])+abs(s[0][1]-s[1][1]))
+            mx,my=(s[0][0]+s[1][0])/2,(s[0][1]+s[1][1])/2;vertical=abs(s[0][0]-s[1][0])<1e-6
+            t=html.escape(e['label']);w=len(e['label'])*12.5+8
+            if vertical and e.get('vlabel'):
+                hgt=len(e['label'])*13
+                labels.append(f'<rect x="{X(mx)+2}" y="{Y(my)-hgt/2-3}" width="15" height="{hgt+6}" fill="white"/><text x="{X(mx)+10}" y="{Y(my)-hgt/2}" font-size="12" writing-mode="tb" style="writing-mode:vertical-rl">{t}</text>')
+            elif vertical:
+                labels.append(f'<rect x="{X(mx)+3}" y="{Y(my)-9}" width="{w}" height="18" fill="white"/><text x="{X(mx)+7}" y="{Y(my)+5}" font-size="12">{t}</text>')
+            else:
+                labels.append(f'<rect x="{X(mx)-w/2}" y="{Y(my)-19}" width="{w}" height="17" fill="white"/><text x="{X(mx)}" y="{Y(my)-6}" text-anchor="middle" font-size="12">{t}</text>')
+    o+=lines
+    for n in spec['nodes']:
+        x=X(n['x']-n['w']/2);y=Y(n['y']+n['h']/2)
+        if not n.get('no_border'):
+            o.append(f'<rect x="{x}" y="{y}" width="{n["w"]*DPI}" height="{n["h"]*DPI}" rx="6" fill="{col(pal,n.get("fill"),"RGB(255,255,255)")}" stroke="{col(pal,n.get("stroke"),"RGB(0,0,0)")}" stroke-width="{n.get("stroke_px",1.3)}"/>')
+        ls=n['text'].split('\n');f=n.get('font_px',fpx);lh=f*1.38;fc=col(pal,n.get('font_color'),'RGB(0,0,0)')
+        y0=Y(n['y'])-(len(ls)-1)*lh/2+f*0.36
+        wt=' font-weight="bold"' if n.get('bold') else ''
+        for i,l in enumerate(ls):
+            o.append(f'<text x="{X(n["x"])}" y="{y0+i*lh}" text-anchor="middle" font-size="{f}" fill="{fc}"{wt}>{spans(l,n.get("red",[]),fc)}</text>')
+    o+=labels;o.append('</svg>')
+    return '\n'.join(o)
 
-    def rgb(key: str | None, default: str) -> str:
-        val = pal.get(key, key) if key else default
-        m = re.fullmatch(r"RGB\((\d+),(\d+),(\d+)\)", (val or default).replace(" ", ""))
-        return f"rgb({m.group(1)},{m.group(2)},{m.group(3)})" if m else "white"
 
-    def box(o: dict) -> tuple[float, float, float, float]:
-        x = (float(o["x"]) - float(o["w"]) / 2) * 96
-        y = H - (float(o["y"]) + float(o["h"]) / 2) * 96
-        return x, y, float(o["w"]) * 96, float(o["h"]) * 96
-
-    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W:.0f}" height="{H:.0f}" font-family="SimSun, Times New Roman" font-size="13">',
-           '<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs>',
-           f'<rect width="{W:.0f}" height="{H:.0f}" fill="white"/>']
-    for g in spec.get("groups", []):
-        x, y, w, h = box(g)
-        out.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" fill="none" stroke="black" stroke-dasharray="5,3"/>')
-        out.append(f'<text x="{x + 4:.1f}" y="{y + 14:.1f}">{escape(g.get("text", ""))}</text>')
-    centres = {}
-    for n in spec.get("nodes", []):
-        x, y, w, h = box(n)
-        centres[n["id"]] = (x + w / 2, y + h / 2, w, h)
-    labels = []
-    for e in spec.get("edges", []):
-        x1, y1, w1, h1 = centres[e["from"]]
-        x2, y2, w2, h2 = centres[e["to"]]
-        out.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="black" marker-end="url(#arr)"/>')
-        if e.get("label"):
-            labels.append(f'<text x="{(x1 + x2) / 2:.1f}" y="{(y1 + y2) / 2 - 4:.1f}" text-anchor="middle" font-size="11">{escape(e["label"])}</text>')
-    for n in spec.get("nodes", []):
-        x, y, w, h = box(n)
-        out.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="5" fill="{rgb(n.get("fill"), "RGB(255,255,255)")}" stroke="black"/>')
-        weight = ' font-weight="bold"' if n.get("bold") else ""
-        out.append(f'<text x="{x + w / 2:.1f}" y="{y + h / 2 + 5:.1f}" text-anchor="middle" fill="{rgb(n.get("font_color"), "RGB(0,0,0)")}"{weight}>{escape(n.get("text", ""))}</text>')
-    out.extend(labels)
-    out.append("</svg>")
-    return "\n".join(out)
+def render_png(svg_text: str, spec: dict, out: Path) -> None:
+    from playwright.sync_api import sync_playwright
+    w = int(spec["page"]["width_in"] * DPI); h = int(spec["page"]["height_in"] * DPI)
+    with sync_playwright() as p:
+        br = p.chromium.launch()
+        pg = br.new_page(viewport={"width": w, "height": h}, device_scale_factor=3.2)
+        pg.set_content(f'<html><body style="margin:0">{svg_text}</body></html>')
+        pg.wait_for_timeout(300)
+        pg.screenshot(path=str(out), clip={"x": 0, "y": 0, "width": w, "height": h})
+        br.close()
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("spec", type=Path)
     ap.add_argument("-o", "--output", type=Path, required=True, help="output .bas file")
-    ap.add_argument("--svg", type=Path, help="optional SVG preview (layout check only)")
+    ap.add_argument("--svg", type=Path, help="optional SVG preview")
+    ap.add_argument("--png", type=Path, help="optional PNG preview (Playwright + Chromium)")
     args = ap.parse_args()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     args.output.write_bytes(build_macro(spec).encode("ascii"))
     print(f"wrote {args.output}")
-    if args.svg:
-        args.svg.write_text(build_svg(spec), encoding="utf-8")
-        print(f"wrote {args.svg}")
+    if args.svg or args.png:
+        sv = build_svg(spec)
+        if args.svg:
+            args.svg.write_text(sv, encoding="utf-8")
+            print(f"wrote {args.svg}")
+        if args.png:
+            render_png(sv, spec, args.png)
+            print(f"wrote {args.png}")
     return 0
 
 
