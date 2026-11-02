@@ -2,6 +2,20 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [1.1.1] - 2026-11-02
+
+依据开题初稿第二轮审阅意见修订。
+
+### 修复
+- `scripts/build_docx.py`：图号与标题之间的全角空格改为半角空格（Word 中显示为方框），图题、表题设为黑体五号；公式改为 Times New Roman 五号、变量斜体、数字与函数名正体、不加粗、不做拼写检查；求和/连乘空上下限不再显示虚线占位框；`\ ` 产生的空格不再显示为竖线；带编号公式改为无边框三栏表格，按独立公式排版。
+- `assets/proposal-skeleton.md`、`references/04`、`references/05`：图题示例改用半角空格。
+
+### 修改
+- `references/05-research-plan-figures-formulas.md`：公式书写规范对标学习模板（不加粗、不用左上标与花体、独立公式排版、符号唯一）。
+- `references/02-section-guide.md`：2.1 中不要在研究内容条目之前按编号讲各项关系。
+- `references/10-common-mistakes.md`：新增第 34–36 条。
+- `scripts/check_proposal.py`：提示图表题中的全角空格，以及公式中的 `\boldsymbol`、左上标和花体写法。
+
 ## [1.1.0] - 2026-10-28
 
 依据一次真实开题初稿的审阅意见迭代。

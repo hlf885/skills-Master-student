@@ -316,6 +316,13 @@ def main() -> int:
     if re.search(r"[\u4e00-\u9fff][,;:?!][\u4e00-\u9fff]", plain):
         warn("中文正文中出现半角标点（, ; : ? !）。")
 
+    # ---------- 图表题与公式写法 ----------
+    if re.search(r"(?:!\[\s*)?[图表]\s*\d+[-.]\d+\u3000", md):
+        warn("图题或表题的图号与标题之间是全角空格（Word 中常显示为方框），请改为一个半角空格。")
+    bad_tex = [w for w, pat in (("\\boldsymbol/\\mathbf 加粗", r"\\(?:boldsymbol|mathbf)\{"), ("左上标 {}^", r"\{\}\^"), ("花体 \\mathcal", r"\\mathcal\{")) if re.search(pat, md)]
+    if bad_tex:
+        warn(f"公式中出现 {bad_tex}：模板公式不加粗、不用左上标和花体，请按 05 号规范改写。")
+
     # ---------- 可行性分析（学生视角、学术研究） ----------
     feas_key = next((k for k, (l, t, b) in by_key.items() if k.startswith("3.") and "可行性" in t), None)
     if feas_key:

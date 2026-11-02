@@ -6,7 +6,7 @@ description: >-
   （Visio 作图 + MathType 公式）、创新点、工作计划、GB/T 7714 参考文献（56–66 条）、去 AI 味与预判式写作，
   以及给非本领域答辩专家看的通俗讲解稿。Use for Chinese master's thesis proposal (开题报告) writing.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   repository: "https://github.com/hlf885/skills-Master-student"
   project: "proposal"
 ---
@@ -78,7 +78,8 @@ metadata:
 - 作图前先说：“请先打开 Microsoft Visio 和 MathType（Word 中出现 MathType 选项卡）。打开后告诉我。”收到确认后再进行。
 - 有电脑操控能力时，直接在 Visio 中绘制；没有时，用 `scripts/visio_macro.py` 由图规格生成 Visio VBA 宏，让用户一键生成可编辑的 Visio 图（`--png` 同时生成插入 Word 用的预览图）。
 - 研究内容框图（图2-1）用分层结构：发现问题 → 研究目标 → 研究内容 → 关键问题，黄蓝虚线分层、重点词标红，示例见 `assets/figure-spec-research-content.json`；全文各图采用 `references/05-research-plan-figures-formulas.md` 中的统一配色。
-- 公式先以 Word 公式写入，再用 MathType 的“Convert Equations”批量转为 MathType 对象；或提供 LaTeX 由 MathType 直接转换。编号格式统一为（3-1）。
+- 公式先以 Word 公式写入，再用 MathType 的“Convert Equations”批量转为 MathType 对象；或提供 LaTeX 由 MathType 直接转换。编号格式统一为（3-1）。公式格式对标学习模板：Times New Roman 五号，变量斜体，不加粗，不用左上标和花体，带编号公式按独立公式排版（细则见 `references/05-research-plan-figures-formulas.md`）。
+- 图题、表题的图号与标题之间用半角空格，黑体五号居中。
 - 场景/实物/代表性工作的图片：按 `references/05-research-plan-figures-formulas.md` 的“图片获取与无水印核查”执行，记录来源，不擦除他人水印。
 
 ### 阶段 7　自审与去 AI 味

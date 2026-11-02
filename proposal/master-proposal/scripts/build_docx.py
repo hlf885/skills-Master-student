@@ -9,8 +9,11 @@
   - 标题：黑体加粗；图题、表题居中；参考文献条目悬挂缩进；
   - 页边距：上下 2.54 cm、左 2.5 cm、右 1.5 cm；
   - 引用 ^[n]^ 输出为上标；
-  - 公式：$$…$$ 转为 Word 公式（OMML），可在 Word 中用 MathType “Convert Equations” 批量转为 MathType 对象；
-    公式后单独一行的编号 “(3-1)” 会与公式合并为“居中公式 + 右对齐编号”；
+  - 公式：$$…$$ 转为 Word 公式（OMML），排版对标常见开题模板（MathType 默认样式）：Times New Roman 五号，
+    变量斜体，数字、函数名、mathrm 文字与大写希腊字母正体，一律不加粗；公式后单独一行的编号 “(3-1)”
+    会与公式组成无边框三栏表格（公式居中、按独立公式排版，编号右对齐）；求和/连乘上下限置于符号上下方；
+    可在 Word 中用 MathType “Convert Equations” 批量转为 MathType 对象；
+  - 图题、表题：图号与标题之间统一为半角空格（全角空格在 Word 中常显示为方框），黑体五号居中；
   - --latex-text：公式保留为 $$…$$ 文本，便于在 Word 中用 MathType 的 Toggle TeX 逐个转换。
 """
 from __future__ import annotations
@@ -41,6 +44,8 @@ M_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
 
 def preprocess(md: str, latex_text: bool) -> str:
     md = re.sub(r"<!--.*?-->", "", md, flags=re.S)
+    # 图号/表号与标题之间的全角空格改为半角空格
+    md = re.sub(r"([图表]\s*\d+[-.]\d+)[\u3000\s]+", r"\1 ", md)
     # 公式中的 \tag{3-1} → 公式后独立一行编号
     md = re.sub(r"\$\$(.*?)\\tag\{([^}]*)\}\s*\$\$", lambda m: f"$${m.group(1).strip()}$$\n\n({m.group(2)})", md, flags=re.S)
     if latex_text:
@@ -103,29 +108,139 @@ def style_fonts(doc) -> None:
         st.paragraph_format.space_after = Pt(6)
 
 
+_SIMPLE = re.compile(r"^[A-Za-z0-9Ͱ-Ͽ.,一-鿿\s]+$")
+
+
+def _m(tag: str) -> str:
+    return f"{{{M_NS}}}{tag}"
+
+
+def fix_math(root) -> None:
+    """Format OMML like a MathType equation in the reference templates: Times New Roman 五号,
+    letters italic, digits / function names / \\mathrm text / capital Greek upright, never bold.
+    Operators keep the math font. Empty limits (U+200B) are hidden instead of showing a
+    dotted placeholder box, and U+2005 spaces (shown as bars in Word) become thin spaces."""
+    from docx.oxml import OxmlElement
+
+    for mt in root.iter(_m("t")):
+        if mt.text and " " in mt.text:
+            mt.text = mt.text.replace(" ", "  ")
+    for r in list(root.iter(_m("r"))):
+        t = "".join(x.text or "" for x in r.iter(_m("t")))
+        if t == "​":
+            par = r.getparent()
+            par.remove(r)
+            if par.tag in (_m("sup"), _m("sub")) and par.getparent().tag == _m("nary") and len(par) == 0:
+                nary = par.getparent()
+                pr = nary.find(_m("naryPr"))
+                if pr is None:
+                    pr = OxmlElement("m:naryPr")
+                    nary.insert(0, pr)
+                name = "supHide" if par.tag == _m("sup") else "subHide"
+                h = pr.find(_m(name))
+                if h is None:
+                    h = OxmlElement("m:" + name)
+                    pr.append(h)
+                h.set(_m("val"), "1")
+    for r in root.iter(_m("r")):
+        t = "".join(x.text or "" for x in r.iter(_m("t")))
+        mrpr = r.find(_m("rPr"))
+        sty = None
+        if mrpr is not None:
+            st = mrpr.find(_m("sty"))
+            if st is not None:
+                sty = st.get(_m("val"))
+        for old in r.findall(qn("w:rPr")):
+            r.remove(old)
+        wr = OxmlElement("w:rPr")
+        if t and t.strip() and _SIMPLE.match(t):
+            if mrpr is None:
+                mrpr = OxmlElement("m:rPr")
+                r.insert(0, mrpr)
+            for st in mrpr.findall(_m("sty")):
+                mrpr.remove(st)
+            if mrpr.find(_m("nor")) is None:
+                mrpr.append(OxmlElement("m:nor"))
+            f = OxmlElement("w:rFonts")
+            for a, v in (("w:ascii", EN_FONT), ("w:hAnsi", EN_FONT), ("w:cs", EN_FONT), ("w:eastAsia", CN_FONT)):
+                f.set(qn(a), v)
+            wr.append(f)
+            upright = (sty == "p" or re.search(r"[一-鿿]", t)
+                       or re.fullmatch(r"[0-9.,\s]+", t) or re.fullmatch(r"[Α-Ω]+", t))
+            if not upright:
+                wr.append(OxmlElement("w:i"))
+        for tag in ("w:sz", "w:szCs"):
+            e = OxmlElement(tag)
+            e.set(qn("w:val"), str(int(BODY_PT * 2)))
+            wr.append(e)
+        wr.append(OxmlElement("w:noProof"))
+        kids = list(r)
+        r.insert(kids.index(mrpr) + 1 if mrpr is not None and mrpr in kids else 0, wr)
+
+
 def merge_equation_numbers(doc, text_width_cm: float) -> int:
-    paras = doc.paragraphs
+    """Turn “$$…$$ + (3-1)” into a borderless 1×3 table: equation centred in display mode
+    (full-size fractions, limits above/below ∑∏), number right-aligned — the usual thesis layout."""
+    from docx.oxml import OxmlElement
+    from docx.shared import Cm as _Cm
+
+    paras = list(doc.paragraphs)
     merged = 0
+    side = 1.3
+    widths = [side, text_width_cm - 2 * side, side]
     for i, p in enumerate(paras[:-1]):
         omp = p._element.find(f".//{{{M_NS}}}oMathPara")
         nxt = paras[i + 1]
         if omp is None or not EQ_NO.match(nxt.text):
             continue
         number = "(" + EQ_NO.match(nxt.text).group(1) + ")"
-        maths = [copy.deepcopy(m) for m in omp.findall(f"{{{M_NS}}}oMath")]
-        omp.getparent().remove(omp)
-        for r in list(p.runs):
-            r._element.getparent().remove(r._element)
-        pf = p.paragraph_format
-        pf.first_line_indent = Cm(0)
-        pf.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        pf.tab_stops.add_tab_stop(Cm(text_width_cm / 2), WD_TAB_ALIGNMENT.CENTER)
-        pf.tab_stops.add_tab_stop(Cm(text_width_cm), WD_TAB_ALIGNMENT.RIGHT)
-        p.add_run("\t")
-        for m in maths:
-            p._element.append(m)
-        tail = p.add_run("\t" + number)
-        set_run_font(tail, BODY_PT)
+        for nary in omp.iter(_m("nary")):
+            pr = nary.find(_m("naryPr"))
+            if pr is None:
+                pr = OxmlElement("m:naryPr")
+                nary.insert(0, pr)
+            ll = pr.find(_m("limLoc"))
+            if ll is None:
+                ll = OxmlElement("m:limLoc")
+                ch = pr.find(_m("chr"))
+                pr.insert(list(pr).index(ch) + 1 if ch is not None else 0, ll)
+            ll.set(_m("val"), "undOvr")
+        tbl = doc.add_table(rows=1, cols=3)
+        tbl.autofit = False
+        grid = tbl._tbl.find(qn("w:tblGrid"))
+        for gc, wv in zip(grid.findall(qn("w:gridCol")), widths):
+            gc.set(qn("w:w"), str(int(wv / 2.54 * 1440)))
+        tblpr = tbl._tbl.find(qn("w:tblPr"))
+        for tag in ("w:tblStyle", "w:tblBorders", "w:tblW"):
+            x = tblpr.find(qn(tag))
+            if x is not None:
+                tblpr.remove(x)
+        b = OxmlElement("w:tblBorders")
+        for s_ in ("top", "left", "bottom", "right", "insideH", "insideV"):
+            x = OxmlElement("w:" + s_)
+            x.set(qn("w:val"), "nil")
+            b.append(x)
+        tblpr.append(b)
+        tw = OxmlElement("w:tblW")
+        tw.set(qn("w:w"), str(int(sum(widths) / 2.54 * 1440)))
+        tw.set(qn("w:type"), "dxa")
+        tblpr.append(tw)
+        lay = OxmlElement("w:tblLayout")
+        lay.set(qn("w:type"), "fixed")
+        tblpr.append(lay)
+        for k, cell in enumerate(tbl.rows[0].cells):
+            cell.width = _Cm(widths[k])
+            va = OxmlElement("w:vAlign")
+            va.set(qn("w:val"), "center")
+            cell._tc.get_or_add_tcPr().append(va)
+        mid = tbl.rows[0].cells[1].paragraphs[0]
+        mid.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        mid._element.append(copy.deepcopy(omp))
+        rp = tbl.rows[0].cells[2].paragraphs[0]
+        rp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        set_run_font(rp.add_run(number), BODY_PT)
+        p._element.addprevious(tbl._tbl)
+        p._element.getparent().remove(p._element)
         nxt._element.getparent().remove(nxt._element)
         merged += 1
     return merged
@@ -139,7 +254,7 @@ def format_document(path: Path) -> None:
     sec.left_margin, sec.right_margin = Cm(2.5), Cm(1.5)
     text_width = 21 - 2.5 - 1.5
     style_fonts(doc)
-    merged = merge_equation_numbers(doc, text_width)
+    merged = merge_equation_numbers(doc, text_width - 0.4)
 
     for p in doc.paragraphs:
         sname = p.style.name if p.style is not None else ""
@@ -163,6 +278,10 @@ def format_document(path: Path) -> None:
             pf.first_line_indent = Pt(BODY_PT * 2)
         for r in p.runs:
             set_run_font(r, BODY_PT)
+        if CAPTION.match(p.text):
+            for r in p.runs:
+                set_run_font(r, BODY_PT, east=HEAD_FONT, bold=False)
+    fix_math(doc.element.body)
     for t in doc.tables:
         for row in t.rows:
             for cell in row.cells:
