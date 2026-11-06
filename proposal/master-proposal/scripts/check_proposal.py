@@ -2,7 +2,7 @@
 """开题报告 Markdown 稿件自检（只读，不修改文件）。
 
 用法:
-    python check_proposal.py 稿件.md [--json] [--targets targets.json]
+    python check_proposal.py 稿件.md [--json] [--targets targets.json] [--specs 图规格目录]
 
 稿件需使用 assets/proposal-skeleton.md 的标题层级：
     # 一、…  # 二、…  # 三、…  # 四、…  # 五、…  # 学位论文工作计划
@@ -11,7 +11,9 @@
 
 检查项：各部分字数、参考文献数量/编号/格式/重复/未引用、引用首次出现顺序、
 图表公式编号、研究内容条目长度与“方案细节”、称谓统一、“拟/已”时态、
-常见套话与错别字、第五部分是否留给用户、工作计划时间顺序。
+常见套话与错别字、第五部分是否留给用户、工作计划时间顺序；
+元叙述与“聊天/思考”式句子、项目口吻（“本课题”“项目”频次）、自我设限式条件句、
+插图数量与文献原图、技术路线图成果栏是否写了论文（需 --specs）。
 只能做格式与形式检查；文献真实性、内容正确性必须人工或联网核实。
 """
 from __future__ import annotations
@@ -55,6 +57,15 @@ METHOD_HINTS = [
 ]
 PM_WORDS = ["项目方", "降级", "退路", "人·月", "人月", "难度最大", "难度较低", "项目进度", "设备进度"]
 BACKGROUND_WATCH = ["遥操作"]
+# 元叙述、讲稿式过渡、把思考过程写进正文的句子（V3 审阅意见 1、3、5、8、10）
+META_PHRASES = [
+    "本节对应", "对应关键问题", "下面分别说明", "下面分别介绍", "下面从", "下面对", "第一部分说明", "第二部分说明",
+    "后两部分对应", "前两部分", "以上为拟创新点", "最终表述将", "口径", "前期验证后", "中期检查时一并说明",
+    "需要说明的是", "需要指出的是", "本节建模指", "本节目标是", "本节的目标", "目标是建立可供", "具体条件按",
+    "不是本课题的研究内容", "不属于本课题",
+]
+# 自我设限、先给自己留退路的条件句（专家会追问“条件不具备怎么办”）
+HEDGE_PHRASES = ["条件具备时", "条件具备后", "具备条件后", "现场条件具备", "设备与场地条件具备", "经项目方许可", "若条件允许", "如条件允许", "视情况"]
 DONE_WORDS = ["实现了", "验证了", "证明了", "取得了", "达到了", "完成了"]
 REF_TYPE = re.compile(r"\[(J|C|M|D|R|S|P|N|A|G|Z|EB/OL|J/OL|M/OL|C/OL|D/OL|DB/OL|CP/OL)\]")
 
@@ -132,6 +143,7 @@ def main() -> int:
     ap.add_argument("file", type=Path)
     ap.add_argument("--json", action="store_true", help="输出 JSON")
     ap.add_argument("--targets", type=Path, help="自定义字数目标 JSON，如 {\"二\": [2800, 3600]}")
+    ap.add_argument("--specs", type=Path, help="图规格 JSON 所在目录，用于检查技术路线图成果栏")
     args = ap.parse_args()
 
     md = args.file.read_text(encoding="utf-8")
@@ -270,6 +282,13 @@ def main() -> int:
         if not re.search(rf"如图\s*{re.escape(f)}|图\s*{re.escape(f)}\s*所示|见图\s*{re.escape(f)}", md):
             warn(f"图{f} 在正文中未被提及（如“如图{f}所示”）。")
     report["figures"] = len(set(fig_caps))
+    nfig = len(set(fig_caps))
+    if nfig and nfig < 12:
+        warn(f"全文插图 {nfig} 幅，同领域样本多为 13–25 幅：可在 1.2 各小节补充代表性工作的文献原图，在 3.2 补充模型截图、原理图。")
+    lit_figs = re.findall(r"!\[\s*图\s*\d+[-.]\d+[^\]\n]*\^\[\d", md) + re.findall(r"^\s*图\s*\d+[-.]\d+ [^\n]*\^\[\d", md, flags=re.M)
+    report["literature_figures"] = len(lit_figs)
+    if nfig and not lit_figs:
+        warn("没有带文献引用的图题：1.2 研究现状中宜插入代表性工作的原图（清晰、无水印、图题后标注引用）。")
     report["tables"] = len(set(tab_caps))
     report["equations"] = len(set(eq_tags))
 
@@ -322,6 +341,33 @@ def main() -> int:
     bad_tex = [w for w, pat in (("\\boldsymbol/\\mathbf 加粗", r"\\(?:boldsymbol|mathbf)\{"), ("左上标 {}^", r"\{\}\^"), ("花体 \\mathcal", r"\\mathcal\{")) if re.search(pat, md)]
     if bad_tex:
         warn(f"公式中出现 {bad_tex}：模板公式不加粗、不用左上标和花体，请按 05 号规范改写。")
+
+    # ---------- 元叙述、自我设限、项目口吻 ----------
+    meta = {p: plain.count(p) for p in META_PHRASES if plain.count(p)}
+    if meta:
+        warn(f"元叙述或思考过程式句子 {meta}：开题报告直接写内容，不写“本节对应……”“下面分别说明……”“需要说明的是……”之类的讲稿和说明句。")
+    hedge = {p: plain.count(p) for p in HEDGE_PHRASES if plain.count(p)}
+    if hedge:
+        warn(f"自我设限式条件句 {hedge}：实验与验证按计划直接写（如“开展虚实联合验证”），不要从开题起就给自己留条件。")
+    n_topic = plain_voice.count("本课题")
+    if n_topic > 12:
+        warn(f"“本课题”出现 {n_topic} 次（样本多为 4–12 次）：多数句子可以直接以研究对象或方法作主语。")
+    proj_outside = plain.count("项目") - (strip_md(by_key["1.1"][2]).count("项目") if "1.1" in by_key else 0)
+    if proj_outside > 3:
+        warn(f"1.1 以外“项目”出现约 {proj_outside} 次：依托项目在 1.1 说明一次即可，后文用研究对象、设计资料、装置等表述，保持学术研究而非项目报告的口吻。")
+
+    # ---------- 技术路线图 ----------
+    if args.specs and args.specs.is_dir():
+        for f in sorted(args.specs.glob("*.json")):
+            try:
+                sp = json.loads(f.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            if "技术路线" not in str(sp.get("title", "")):
+                continue
+            bad = [n.get("text", "").replace("\n", " ") for n in sp.get("nodes", []) if re.search(r"论文|专利|软著", n.get("text", ""))]
+            if bad:
+                warn(f"{f.name} 技术路线图出现 {bad}：技术路线写研究步骤与阶段成果，论文、专利等写在工作计划里。")
 
     # ---------- 可行性分析（学生视角、学术研究） ----------
     feas_key = next((k for k, (l, t, b) in by_key.items() if k.startswith("3.") and "可行性" in t), None)
