@@ -1,0 +1,472 @@
+{
+ "figure_id": "图2-1",
+ "title": "研究内容框图（五层四列：工程问题→存在问题→研究内容→关键方法→预期结果→研究目标，外圈反馈闭环）",
+ "page": {
+  "width_in": 6.3,
+  "height_in": 7.35
+ },
+ "nodes": [
+  {
+   "id": "T",
+   "text": "工程问题：研究对象在××场景下，××如何确定，\n才能完成××任务？",
+   "x": 3.1,
+   "y": 6.64,
+   "w": 5.64,
+   "h": 0.5,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true,
+   "red": []
+  },
+  {
+   "id": "P1",
+   "text": "现状问题1\n（一行不超过9个字）\n重点词标红",
+   "x": 0.895,
+   "y": 5.55,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "red": [
+    "重点词标红"
+   ],
+   "font_px": 11.6
+  },
+  {
+   "id": "C1",
+   "text": "研究内容（1）\n××××××××\n××××××",
+   "x": 0.895,
+   "y": 4.29,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true,
+   "red": [],
+   "font_px": 11.6
+  },
+  {
+   "id": "M1",
+   "text": "关键方法一\n关键方法二\n关键方法三",
+   "x": 0.895,
+   "y": 2.93,
+   "w": 1.23,
+   "h": 0.86,
+   "fill": "white",
+   "stroke": "grey_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "R1",
+   "text": "预期结果\n（可含量化指标）",
+   "x": 0.895,
+   "y": 1.55,
+   "w": 1.23,
+   "h": 0.7,
+   "fill": "green_fill",
+   "stroke": "green_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "P2",
+   "text": "现状问题2\n（一行不超过9个字）\n重点词标红",
+   "x": 2.365,
+   "y": 5.55,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "red": [
+    "重点词标红"
+   ],
+   "font_px": 11.6
+  },
+  {
+   "id": "C2",
+   "text": "研究内容（2）\n××××××××\n××××××",
+   "x": 2.365,
+   "y": 4.29,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true,
+   "red": [],
+   "font_px": 11.6
+  },
+  {
+   "id": "M2",
+   "text": "关键方法一\n关键方法二\n关键方法三",
+   "x": 2.365,
+   "y": 2.93,
+   "w": 1.23,
+   "h": 0.86,
+   "fill": "white",
+   "stroke": "grey_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "R2",
+   "text": "预期结果\n（可含量化指标）",
+   "x": 2.365,
+   "y": 1.55,
+   "w": 1.23,
+   "h": 0.7,
+   "fill": "green_fill",
+   "stroke": "green_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "P3",
+   "text": "现状问题3\n（一行不超过9个字）\n重点词标红",
+   "x": 3.835,
+   "y": 5.55,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "red": [
+    "重点词标红"
+   ],
+   "font_px": 11.6
+  },
+  {
+   "id": "C3",
+   "text": "研究内容（3）\n××××××××\n××××××",
+   "x": 3.835,
+   "y": 4.29,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true,
+   "red": [],
+   "font_px": 11.6
+  },
+  {
+   "id": "M3",
+   "text": "关键方法一\n关键方法二\n关键方法三",
+   "x": 3.835,
+   "y": 2.93,
+   "w": 1.23,
+   "h": 0.86,
+   "fill": "white",
+   "stroke": "grey_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "R3",
+   "text": "预期结果\n（可含量化指标）",
+   "x": 3.835,
+   "y": 1.55,
+   "w": 1.23,
+   "h": 0.7,
+   "fill": "green_fill",
+   "stroke": "green_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "P4",
+   "text": "现状问题4\n（一行不超过9个字）\n重点词标红",
+   "x": 5.305,
+   "y": 5.55,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "peach_fill",
+   "stroke": "orange_line",
+   "red": [
+    "重点词标红"
+   ],
+   "font_px": 11.6
+  },
+  {
+   "id": "C4",
+   "text": "研究内容（4）\n××××××××\n××××××",
+   "x": 5.305,
+   "y": 4.29,
+   "w": 1.23,
+   "h": 0.66,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true,
+   "red": [],
+   "font_px": 11.6
+  },
+  {
+   "id": "M4",
+   "text": "关键方法一\n关键方法二\n关键方法三",
+   "x": 5.305,
+   "y": 2.93,
+   "w": 1.23,
+   "h": 0.86,
+   "fill": "white",
+   "stroke": "grey_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "R4",
+   "text": "预期结果\n（可含量化指标）",
+   "x": 5.305,
+   "y": 1.55,
+   "w": 1.23,
+   "h": 0.7,
+   "fill": "green_fill",
+   "stroke": "green_line",
+   "font_px": 11.6
+  },
+  {
+   "id": "G",
+   "text": "研究目标：形成××方法，\n给出××的方案",
+   "x": 3.1,
+   "y": 0.52,
+   "w": 5.64,
+   "h": 0.52,
+   "fill": "blue_fill",
+   "stroke": "blue_line",
+   "bold": true,
+   "red": []
+  },
+  {
+   "id": "LP",
+   "text": "存在问题",
+   "x": 0.54,
+   "y": 6.0,
+   "w": 0.6,
+   "h": 0.2,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 12.5
+  },
+  {
+   "id": "LC",
+   "text": "研究内容",
+   "x": 0.54,
+   "y": 4.74,
+   "w": 0.6,
+   "h": 0.2,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 12.5
+  },
+  {
+   "id": "LM",
+   "text": "关键方法",
+   "x": 0.54,
+   "y": 3.48,
+   "w": 0.6,
+   "h": 0.2,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 12.5
+  },
+  {
+   "id": "LR",
+   "text": "预期结果",
+   "x": 0.54,
+   "y": 2.02,
+   "w": 0.6,
+   "h": 0.2,
+   "no_border": true,
+   "font_color": "label",
+   "bold": true,
+   "font_px": 12.5
+  }
+ ],
+ "groups": [
+  {
+   "id": "GP",
+   "text": "",
+   "x": 3.1,
+   "y": 5.64,
+   "w": 5.8,
+   "h": 0.98,
+   "dashed": true,
+   "stroke": "yellow_dash"
+  },
+  {
+   "id": "GC",
+   "text": "",
+   "x": 3.1,
+   "y": 4.38,
+   "w": 5.8,
+   "h": 0.98,
+   "dashed": true,
+   "stroke": "blue_dash"
+  },
+  {
+   "id": "GM",
+   "text": "",
+   "x": 3.1,
+   "y": 3.02,
+   "w": 5.8,
+   "h": 1.18,
+   "dashed": true,
+   "stroke": "yellow_dash"
+  },
+  {
+   "id": "GR",
+   "text": "",
+   "x": 3.1,
+   "y": 1.64,
+   "w": 5.8,
+   "h": 1.02,
+   "dashed": true,
+   "stroke": "blue_dash"
+  }
+ ],
+ "edges": [
+  {
+   "from": "T",
+   "to": "P1"
+  },
+  {
+   "from": "P1",
+   "to": "C1"
+  },
+  {
+   "from": "C1",
+   "to": "M1"
+  },
+  {
+   "from": "M1",
+   "to": "R1"
+  },
+  {
+   "from": "R1",
+   "to": "G"
+  },
+  {
+   "from": "C1",
+   "to": "C2"
+  },
+  {
+   "from": "T",
+   "to": "P2"
+  },
+  {
+   "from": "P2",
+   "to": "C2"
+  },
+  {
+   "from": "C2",
+   "to": "M2"
+  },
+  {
+   "from": "M2",
+   "to": "R2"
+  },
+  {
+   "from": "R2",
+   "to": "G"
+  },
+  {
+   "from": "C2",
+   "to": "C3"
+  },
+  {
+   "from": "T",
+   "to": "P3"
+  },
+  {
+   "from": "P3",
+   "to": "C3"
+  },
+  {
+   "from": "C3",
+   "to": "M3"
+  },
+  {
+   "from": "M3",
+   "to": "R3"
+  },
+  {
+   "from": "R3",
+   "to": "G"
+  },
+  {
+   "from": "C3",
+   "to": "C4"
+  },
+  {
+   "from": "T",
+   "to": "P4"
+  },
+  {
+   "from": "P4",
+   "to": "C4"
+  },
+  {
+   "from": "C4",
+   "to": "M4"
+  },
+  {
+   "from": "M4",
+   "to": "R4"
+  },
+  {
+   "from": "R4",
+   "to": "G"
+  },
+  {
+   "from": "C4",
+   "to": "C1",
+   "label": "验证结果反馈，修正××模型",
+   "color": "red_line",
+   "via": [
+    [
+     5.92,
+     4.289999999999999
+    ],
+    [
+     6.12,
+     4.289999999999999
+    ],
+    [
+     6.12,
+     7.05
+    ],
+    [
+     0.08000000000000002,
+     7.05
+    ],
+    [
+     0.08000000000000002,
+     4.289999999999999
+    ],
+    [
+     0.28,
+     4.289999999999999
+    ]
+   ]
+  }
+ ],
+ "style": {
+  "font_cn": "宋体",
+  "font_en": "Times New Roman",
+  "font_size_pt": 9,
+  "line_weight_pt": 1.0,
+  "corner_rounding_in": 0.06,
+  "edge_color": "arrow",
+  "preview_font_px": 12
+ },
+ "palette": {
+  "blue_fill": "RGB(221,235,247)",
+  "blue_line": "RGB(46,117,182)",
+  "peach_fill": "RGB(251,229,214)",
+  "orange_line": "RGB(237,125,49)",
+  "yellow_dash": "RGB(255,192,0)",
+  "blue_dash": "RGB(0,112,192)",
+  "label": "RGB(31,56,100)",
+  "arrow": "RGB(47,85,151)",
+  "white": "RGB(255,255,255)",
+  "green_fill": "RGB(226,239,218)",
+  "green_line": "RGB(112,173,71)",
+  "grey_fill": "RGB(242,242,242)",
+  "grey_line": "RGB(127,127,127)",
+  "red": "RGB(255,0,0)",
+  "red_line": "RGB(192,0,0)"
+ }
+}

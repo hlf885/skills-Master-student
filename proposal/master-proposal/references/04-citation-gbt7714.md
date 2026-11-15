@@ -1,4 +1,4 @@
-# 04 参考文献：GB/T 7714—2015 顺序编码制（对标模板）
+# 04 参考文献：GB/T 7714—2025 顺序编码制（对标模板）
 
 模板统一采用**顺序编码制**：正文按首次引用顺序编号，引用标注为**上标方括号** `[1]`；文后列表按编号排列。格式与 Google Scholar/CNKI 导出的“GB/T 7714”样式一致。用户或学校另有规定时，以其规定为准。
 
@@ -19,20 +19,25 @@
 - 期刊：`年, 卷(期): 起-止页.`；只有文章号时写文章号：`2024, 9(2): 2391-2398.` 或 `2022, 156: 104203.`；
 - 页码用半角连字符 `-`，不用 `~` 或 `—`；
 - 外文刊名、会议名按原文大小写，不随意缩写；
-- 有 DOI 可在末尾补 `DOI: 10.xxxx/xxxx.`（全表统一：要么都加，要么都不加）。
+- 期刊论文、会议论文不加 DOI（与学习模板一致，全表统一）；
+- 会议论文：`题名[C]//会议录名(缩写). 出版者, 年: 起-止页.`，不写出版地，出版者多为 IEEE、Springer；
+- 中国作者的外文文献，拼音姓名同样按“姓 名首字母”著录：`Wei Y, Yin H, Tian X, et al.`；
+- 学位论文写出版地、学校、年份和所引内容的页码范围；
+- 法律法规、政策文件用 `[EB/OL]`，依次写（发布或更新日期）[引用日期]和网址。
 
 ## 三、各类型示例（格式示意；具体文献需检索核实后使用）
 
 | 类型 | 格式 |
 | --- | --- |
-| 中文期刊 | 陶飞, 刘蔚然, 张萌, 等. 数字孪生五维模型及十大领域应用[J]. 计算机集成制造系统, 2019, 25(1): 1-18. |
-| 外文期刊 | Hogan N. Impedance control: An approach to manipulation: Part I—Theory[J]. Journal of Dynamic Systems, Measurement, and Control, 1985, 107(1): 1-7. |
-| 外文会议 | Shan T, Englot B, Meyers D, et al. LIO-SAM: Tightly-coupled lidar inertial odometry via smoothing and mapping[C]//2020 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). Las Vegas: IEEE, 2020: 5135-5142. |
+| 中文期刊 | 张振国, 毛建旭, 谭浩然, 等. 重大装备制造多机器人任务分配与运动规划技术研究综述[J]. 自动化学报, 2024, 50(1): 21-41. |
+| 外文期刊 | Tao F, Zhang H, Zhang C. Advancements and challenges of digital twins in industry[J]. Nature Computational Science, 2024, 4(3): 169-177. |
+| 外文会议 | Wachter A, Kugi A, Hartl-Nesic C. Time-optimal TCP and robot base placement for pick-and-place tasks in highly constrained environments[C]//2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2024: 2251-2257. |
+| 外文会议（图书形式出版的会议录） | Shao B, Cao N, Ding Y, et al. MoMa-Pos: An efficient object-kinematic-aware base placement determination framework for mobile manipulation[C]//Algorithms and Architectures for Parallel Processing (ICA3PP). Springer, 2026: 254-270. |
 | 专著 | Thrun S, Burgard W, Fox D. Probabilistic robotics[M]. Cambridge: MIT Press, 2005. |
-| 学位论文 | 作者. 题名[D]. 城市: 学校, 年份. |
+| 学位论文 | Zoppoli A. Digital-twin based development of remote handling facilities for fusion reactors from design to operation[D]. Padova: Università degli Studi di Padova, 2025: 55-152. |
 | 网络首发 | 作者. 题名[J/OL]. 刊名, 年: 起-止页[引用日期]. DOI. |
-| 预印本 | Fu Z, Zhao Q, Wu Q, et al. HumanPlus: Humanoid shadowing and imitation from humans[J]. arXiv preprint arXiv:2406.10454, 2024. |
-| 政策文件 | 国务院. 新一代人工智能发展规划[EB/OL]. (2017-07-20)[引用日期]. 网址. |
+| 预印本 | 开题报告中不引用（见第七节）。确需了解格式时：责任者. 题名[PP/OL]. 版本. 平台 (日期)[引用日期]. DOI. |
+| 法律法规 | 全国人民代表大会常务委员会. 中华人民共和国原子能法[EB/OL]. (2025-09-15)[2026-11-14]. https://www.12371.cn/2025/09/13/ARTI1757727288265888.shtml. |
 | 报告 | 发布机构. 报告名称[R]. 出版地: 出版者, 年. |
 | 专利 | 申请人. 专利名称: 专利号[P]. 公告日期. |
 | 标准 | 发布机构. 标准名称: 标准号[S]. 出版地: 出版者, 年. |
@@ -57,3 +62,24 @@
 - 总数 **56–66 条**（用户硬性要求）；
 - 交付前运行 `scripts/check_proposal.py`，它会检查：条目数量、编号连续、正文首次引用顺序、未被引用的条目、重复条目、类型标识缺失、全角标点、中文文献误用 et al 等；
 - 脚本只能检查格式，**真实性必须逐条联网核实**并记入《参考文献核实表》。
+
+## 六、GB/T 7714—2025 相对 2015 版的变化（1.3.0 新增）
+
+GB/T 7714—2025《信息与文献 参考文献著录规则》2025-12-02 发布，2026-07-01 实施，代替 GB/T 7714—2015。用户说“按最新国标”时按 2025 版著录；学校或导师另有规定的以其规定为准。与开题报告有关的变化：
+
+- 新增文献类型标识：预印本 `[PP]`、数据集 `[DS]`；`[EB]` 专指网站、网页；
+- 预印本著录为：`责任者. 题名[PP/OL]. 版本. 平台 (创建或修改日期)[引用日期]. 获取路径或 DOI.`，不再写成 `[J]. arXiv preprint`；
+- “专著”改称“图书”，“数字对象唯一标识符”改称“永久标识符”；获取路径中已含 DOI 时不重复著录；
+- 期刊论文、会议论文、学位论文、图书析出文献的基本格式未变：责任者前 3 位加“, 等”或“, et al”；
+- 网络首发论文正式出版后，补全年、卷（期）、页码，改回 `[J]`；
+- 开题报告不引用预印本（1.5.0），`[PP/OL]` 格式只用于了解标准，见第七节。
+
+著录前先确认当前日期是否已过实施日期，并联网核对标准有无更新版本。
+
+## 七、只引已正式发表的文献，控制文献年代（1.5.0 新增，依据《存在的问题-V7》）
+
+- **不引未发表文献**：arXiv 等平台的预印本、查不到正式出版信息的技术报告和内部资料不进参考文献表。检索到预印本时，用 Crossref、OpenAlex、DBLP 或作者主页查是否已正式发表：已发表的改引正式版本（会议录的出版年可能晚于会议年，按出版物著录），未发表的换成同主题的已发表文献；
+- **2020 年以前的文献原则上不引**：概念类老文献（提出某个指标、某种图谱、某个概念的原始论文）按 `03-literature-review.md` 第七节改引近年文献；方案中直接使用的算法、软件工具、定理（如 RRT-Connect、OMPL、FCL、集合覆盖贪心算法）保留原始出处，在《参考文献导读》中说明保留理由；
+- **核实流程**：Crossref 用 `api.crossref.org/journals/<ISSN>/works?query=...` 或 `works?query.bibliographic=...`，查询词宜短；OpenAlex 用 `api.openalex.org/works?search=...`；逐条顺序查询，不并行（并行请求易被限流或返回无关结果）；出版商页面打不开时，用期刊官网、DBLP、作者主页、学位论文库核对，仍核对不了的不用；
+- **判断不超出原文**：正文中“该方法没有考虑……”“只适用于……”这类评价，必须在原文中找到对应段落；只核对过题录的文献，句子只写到题名和摘要能支撑的程度；
+- **本仓库作者已认可的格式**：见第三节表格中的示例（期刊无 DOI、会议不写出版地、学位论文写页码、法规写日期）。格式改动前先对照学习模板。

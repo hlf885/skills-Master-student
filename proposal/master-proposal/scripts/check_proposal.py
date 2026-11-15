@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import re
 import sys
@@ -63,11 +64,13 @@ META_PHRASES = [
     "后两部分对应", "前两部分", "以上为拟创新点", "最终表述将", "口径", "前期验证后", "中期检查时一并说明",
     "需要说明的是", "需要指出的是", "本节建模指", "本节目标是", "本节的目标", "目标是建立可供", "具体条件按",
     "不是本课题的研究内容", "不属于本课题",
+    # 1.4.0（存在的问题-V6）
+    "由此提出", "呈现以下", "据此，本课题拟", "据此本课题拟", "依托实验室承担", "实验室承担的",
 ]
 # 自我设限、先给自己留退路的条件句（专家会追问“条件不具备怎么办”）
 HEDGE_PHRASES = ["条件具备时", "条件具备后", "具备条件后", "现场条件具备", "设备与场地条件具备", "经项目方许可", "若条件允许", "如条件允许", "视情况"]
 DONE_WORDS = ["实现了", "验证了", "证明了", "取得了", "达到了", "完成了"]
-REF_TYPE = re.compile(r"\[(J|C|M|D|R|S|P|N|A|G|Z|EB/OL|J/OL|M/OL|C/OL|D/OL|DB/OL|CP/OL)\]")
+REF_TYPE = re.compile(r"\[(J|C|M|D|R|S|P|N|A|G|Z|EB/OL|J/OL|M/OL|C/OL|D/OL|DB/OL|CP/OL|PP/OL|PP)\]")
 
 
 def strip_md(text: str) -> str:
@@ -226,6 +229,28 @@ def main() -> int:
             if re.search(r"\]\.\S", body) and not re.search(r"\]\.\s", body):
                 warn(f"{no} 类型标识后的句点后应空一格。")
 
+    # 1.3.0：近三年占比与预印本标识
+    if refs:
+        this_year = datetime.date.today().year
+        years = []
+        for r in refs:
+            ys = [int(y) for y in re.findall(r"(?<![\d./-])((?:19|20)\d\d)(?![\d-])", r)]
+            ys = [y for y in ys if 1950 <= y <= this_year + 1]
+            if ys:
+                years.append(ys[0])
+        recent = sum(1 for y in years if y >= this_year - 2)
+        report["references"]["recent3"] = recent
+        if years and recent * 2 < len(refs):
+            warn(f"近三年（{this_year - 2}–{this_year}）文献约 {recent} 条，不足一半（共 {len(refs)} 条）：补充近两年的高水平文献。")
+        for r in refs:
+            if re.search(r"\[PP(?:/OL)?\]|arXiv|preprint|预印本", r, re.I):
+                warn(r.split("]")[0] + "] 疑似未正式发表的预印本：开题报告只引用已正式发表的文献，改引正式版本或换文献（1.5.0）。")
+        # 1.5.0：2020 年以前的文献
+        old = [y for y in years if y < 2020]
+        report["references"]["before2020"] = len(old)
+        if old:
+            warn(f"2020 年以前的文献 {len(old)} 条：只保留方案中直接使用的算法、工具、定理的原始出处，概念类改引近年文献。")
+
     # ---------- 正文引用顺序 ----------
     text_wo_refs = md
     if ref_key:
@@ -317,13 +342,35 @@ def main() -> int:
     voices = {w: plain_voice.count(w) for w in ("本文", "本课题", "本研究", "我们")}
     used = [w for w, c in voices.items() if c]
     if len(used) > 1:
-        warn(f"称谓混用：{ {w: voices[w] for w in used} }，建议统一为“本课题”或“本研究”。")
+        warn(f"称谓混用：{ {w: voices[w] for w in used} }，统一为“本课题”。")
+    # 1.5.0：“本文”“文中”“本研究”一律改为“本课题”
+    bad_voice = {"本文": plain_voice.count("本文"), "本研究": plain_voice.count("本研究"),
+                 "文中": len(re.findall(r"(?<![论正英原全译])文中", plain_voice))}
+    bad_voice = {k: v for k, v in bad_voice.items() if v}
+    if bad_voice:
+        warn(f"出现 {bad_voice}：指称课题统一用“本课题”。")
+    # 1.5.0：数字与单位之间的空格是否统一
+    spaced = len(re.findall(r"\d\s+(?:mm|cm|km|m|kg|Hz|ms|s|°)(?![A-Za-z])", plain))
+    tight = len(re.findall(r"\d(?:mm|cm|km|m|kg|Hz|ms|s)(?![A-Za-z])", plain))
+    if spaced and tight:
+        warn(f"数字与单位之间有空格 {spaced} 处、无空格 {tight} 处：按用户习惯全文统一。")
     for key in ("二", "三", "四"):
         if key in by_key:
             seg = strip_md(by_key[key][2])
             hits = {w: seg.count(w) for w in DONE_WORDS if seg.count(w)}
             if hits:
                 warn(f"第{key}部分出现完成时表述 {hits}：开题阶段未完成的工作应写“拟……”。")
+    # 1.3.0：人称代词
+    pron_src = re.sub(r"来论述其|及其可行性", "", plain)  # 学校模板栏目原文
+    pron = {w: len(re.findall(w, pron_src)) for w in ("我们", "我国", "我(?![们国])", "你", "他(?!们)", "她", "它", "其(?![中余他次实])")}
+    pron = {k.split("(")[0]: v for k, v in pron.items() if v}
+    if pron:
+        warn(f"出现人称代词 {pron}：省略主语或重复名词（“其他”等已排除，“其”请逐处判断是否作代词）。")
+    # 1.4.0：分号（“式中，……；……”符号说明除外）
+    semi_lines = [ln for ln in plain.split("\n") if "；" in ln and not ln.lstrip().startswith("式中")]
+    n_semi = sum(ln.count("；") for ln in semi_lines)
+    if n_semi:
+        warn(f"正文出现分号 {n_semi} 处（“式中”符号说明除外）：能用句号或逗号的都改掉，一句话写一件事。")
     ai = {p: plain.count(p) for p in AI_PHRASES if plain.count(p)}
     if ai:
         warn(f"模板化/拔高表达（逐条判断是否需要改）：{ai}")
