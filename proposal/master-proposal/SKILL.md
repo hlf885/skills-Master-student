@@ -6,7 +6,7 @@ description: >-
   （Visio 作图 + MathType 公式）、创新点、工作计划、GB/T 7714 参考文献（56–66 条）、去 AI 味与预判式写作，
   以及给非本领域答辩专家看的通俗讲解稿。Use for Chinese master's thesis proposal (开题报告) writing.
 metadata:
-  version: "1.6.0"
+  version: "1.6.1"
   repository: "https://github.com/hlf885/skills-Master-student"
   project: "proposal"
 ---
@@ -99,6 +99,7 @@ metadata:
 
 ### 阶段 8　答辩通俗讲解稿
 
+- 另给一份《可能会被问的问题》：分懂行专家和不懂行专家两部分，每题写回答要点和报告中的依据位置（写法见 `references/06-defense-plain-language.md` 第七节）。
 - 读 `references/06-defense-plain-language.md`，用 `assets/defense-brief-template.md` 生成《答辩通俗讲解稿》：3 分钟能讲完、不含难懂术语、比喻贴切且注明比喻的边界，附“专家可能会问的 10 个问题”及回答要点。
 
 ### 阶段 9　交付
