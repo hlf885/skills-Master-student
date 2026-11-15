@@ -2,6 +2,11 @@
 
 记录跨 Skill 的变化；单个 Skill 的细节见其目录下的 `CHANGELOG.md`。
 
+## 2026-11-15（二）
+
+### 修改
+- `proposal/master-proposal` 升级到 v1.6.0：新增论证主线规范（`references/11-argument-chain.md`）与主线自检脚本 `check_logic_chain.py`，把作者立题依据“围绕题目、层层递进”的写法拆成可复用的步骤；把聊天中直接提出的修改意见整理为规范（硬性规则 17，常见问题 74–86），新增引号、破折号、箭头检查。详见该 Skill 的 `CHANGELOG.md`。
+
 ## 2026-11-15
 
 ### 修改

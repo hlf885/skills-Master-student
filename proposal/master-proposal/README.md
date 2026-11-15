@@ -34,9 +34,10 @@ master-proposal/
 │   ├── 07-style-deai-defensive.md      文风、去 AI 味、预判式写作
 │   ├── 08-socratic-review.md           苏格拉底式追问与自审清单
 │   ├── 09-template-benchmarks.md       9 份样本的量化基准
-│   └── 10-common-mistakes.md           样本中出现过的常见问题
+│   ├── 10-common-mistakes.md           样本与审阅中出现过的常见问题
+│   └── 11-argument-chain.md            论证主线：题目驱动、层层递进、首尾闭环
 ├── assets/                      # 资料清单、全文骨架、答辩稿模板、图规格示例
-├── scripts/                     # check_proposal.py / build_docx.py / visio_macro.py
+├── scripts/                     # check_logic_chain.py / check_proposal.py / build_docx.py / visio_macro.py
 ├── tests/sample.md              # 脚本冒烟测试样例
 └── CHANGELOG.md
 ```
@@ -77,6 +78,7 @@ Copy-Item -Recurse -Force ".\skills-Master-student\proposal\master-proposal" "$H
 ## 脚本
 
 ```bash
+python scripts/check_logic_chain.py 我的开题报告.md --keywords 关键词1,关键词2 --matrix 主线表.md  # 论证主线自检
 python scripts/check_proposal.py 我的开题报告.md          # 自检（字数、文献、编号、套话……）
 python scripts/build_docx.py 我的开题报告.md -o 开题报告.docx   # 生成 Word（需 pandoc、python-docx）
 python scripts/visio_macro.py 图规格.json -o fig.bas --svg 预览.svg  # 生成 Visio 宏

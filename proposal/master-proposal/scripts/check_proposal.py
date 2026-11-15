@@ -349,6 +349,11 @@ def main() -> int:
     bad_voice = {k: v for k, v in bad_voice.items() if v}
     if bad_voice:
         warn(f"出现 {bad_voice}：指称课题统一用“本课题”。")
+    # 1.6.0：引号、破折号、箭头（用户认为成段出现有 AI 味）
+    punct = {"双引号": len(re.findall(r"[“”\"]", plain)) // 2, "破折号": plain.count("——"), "箭头": len(re.findall(r"[→⟶⇒]", plain))}
+    punct = {k: v for k, v in punct.items() if v}
+    if punct:
+        warn(f"正文中有 {punct}：少用引号、破折号和箭头（07 第十一节）。")
     # 1.5.0：数字与单位之间的空格是否统一
     spaced = len(re.findall(r"\d\s+(?:mm|cm|km|m|kg|Hz|ms|s|°)(?![A-Za-z])", plain))
     tight = len(re.findall(r"\d(?:mm|cm|km|m|kg|Hz|ms|s)(?![A-Za-z])", plain))
@@ -441,7 +446,7 @@ def main() -> int:
         elif "请本人撰写" in b5:
             warn("第五部分仍是占位提纲，交付时须醒目提醒用户本人撰写（≥500 字）。")
     else:
-        err("缺少“五、研究基础与工作条件”（由用户本人撰写，但需保留标题与提醒）。")
+        err("缺少“五、研究基础与工作条件”（依据用户已完成的工作撰写；没有材料时保留标题与提纲）。")
 
     # ---------- 工作计划 ----------
     if "计划" in by_key:

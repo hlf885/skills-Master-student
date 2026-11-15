@@ -29,6 +29,7 @@ Copy only the `master-proposal` folder.
 
 ## Scripts
 
+- `scripts/check_logic_chain.py` — argument-chain check: prints the first sentence of every paragraph in 1.1/1.2/1.3 for a read-through, counts where the title keywords land, checks the scope paragraph, concept definition, classification and summary sentences, trend/research-content counts, and drafts the argument matrix (see `references/11-argument-chain.md`).
 - `scripts/check_proposal.py` — read-only checks: section lengths, reference count/format/duplicates/citation order, figure/table/equation numbering, research-content length, voice consistency, tense, stock phrases, typos, schedule order.
 - `scripts/build_docx.py` — Markdown → formatted .docx (pandoc + python-docx), superscript citations, OMML equations with right-aligned numbers.
 - `scripts/visio_macro.py` — figure spec (JSON) → Visio VBA macro producing an editable drawing, plus an SVG preview.
