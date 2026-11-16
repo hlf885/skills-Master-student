@@ -7,8 +7,8 @@
 
 spec.json:
     {"type": "research_content", "style": "R8", "name": "fig2-1", "content": {...}}
-type 目前支持 research_content（研究内容图，画法 R1–R9，见 references/12-figure-styles.md）。
-technical_route、architecture、flowchart 三类在后续版本补充。
+type 可取 research_content（研究内容图，R1–R9）、technical_route（技术路线图，T1–T5）、
+architecture（架构与框架图，A1–A6）、flowchart（算法流程图，F1–F6），见 references/12-figure-styles.md。
 content 中的相对路径（如场景图）相对 spec.json 所在目录。
 """
 from __future__ import annotations
@@ -21,9 +21,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from figstyles import research_content  # noqa: E402
+from figstyles import architecture, flowchart, research_content, technical_route  # noqa: E402
 
-REGISTRY = {"research_content": research_content.STYLES}
+REGISTRY = {"research_content": research_content.STYLES, "technical_route": technical_route.STYLES,
+            "architecture": architecture.STYLES, "flowchart": flowchart.STYLES}
 
 
 def resolve(content: dict, base: Path) -> dict:

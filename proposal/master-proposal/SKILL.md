@@ -6,7 +6,7 @@ description: >-
   （Visio 作图 + MathType 公式）、创新点、工作计划、GB/T 7714 参考文献（56–66 条）、去 AI 味与预判式写作，
   以及给非本领域答辩专家看的通俗讲解稿。Use for Chinese master's thesis proposal (开题报告) writing.
 metadata:
-  version: "1.7.0"
+  version: "1.8.0"
   repository: "https://github.com/hlf885/skills-Master-student"
   project: "proposal"
 ---
@@ -83,7 +83,7 @@ metadata:
 
 ### 阶段 6　作图、公式与图片
 
-- **每张自绘图（研究内容图、技术路线图、架构与框架图、算法流程图）都按 `references/12-figure-styles.md` 的流程走**：问需求（含读者档位：懂行、中间、不懂行）→ 展示图库 → 给出推荐 → 用户挑选 → 用用户内容画候选 → 选定精修 → 用户选择交付格式（PNG、SVG、Visio 宏，可多选）→ 同步改写正文引用句。脚本：`scripts/draw_figure.py`（绘图引擎 `scripts/figkit.py`）。
+- **每张自绘图（研究内容图、技术路线图、架构与框架图、算法流程图）都按 `references/12-figure-styles.md` 的流程走**：问需求（含读者档位：懂行、中间、不懂行）→ 展示图库 → 给出推荐 → 用户挑选 → 用用户内容画候选 → 选定精修 → 用户选择交付格式（PNG、SVG、Visio 宏，可多选）→ 同步改写正文引用句。四类图都有图库：研究内容图 R1–R9、技术路线图 T1–T5、架构与框架图 A1–A6、算法流程图 F1–F6（`assets/figure-gallery/`）。脚本：`scripts/draw_figure.py`（绘图引擎 `scripts/figkit.py`，图库重建 `scripts/make_gallery.py`）。
 - 作图前先说：“请先打开 Microsoft Visio 和 MathType（Word 中出现 MathType 选项卡）。打开后告诉我。”收到确认后再进行。
 - 有电脑操控能力时，直接在 Visio 中绘制；没有时，用 `scripts/visio_macro.py` 由图规格生成 Visio VBA 宏，让用户一键生成可编辑的 Visio 图（`--png` 同时生成插入 Word 用的预览图）。
 - 研究内容框图（图2-1）的画法由用户从图库中选定（1.7.0）：先问需求，再展示 `assets/figure-gallery/research-content/` 中九种画法的总览图和卡片，按 `references/12-figure-styles.md` 第四节推荐 1–2 种，用户挑 2–3 种后用其内容画候选，选定后再精修；全文各图采用 `references/05-research-plan-figures-formulas.md` 中的统一配色。
@@ -135,5 +135,5 @@ metadata:
 | `references/10-common-mistakes.md` | 阶段 7 自审、阶段 10 修改 |
 | `references/11-argument-chain.md` | 阶段 4 做主线表，阶段 5 写立题依据，阶段 7 闭环检查 |
 | `references/12-figure-styles.md` | 阶段 6，每张自绘图的问需求、图库、推荐、交付流程 |
-| `assets/` | 自绘图图库 `figure-gallery/`、答辩问答模板 `defense-qa-template.md`、资料清单、全文骨架（Markdown 写作格式）、答辩稿模板、Visio 图规格示例（含分层研究内容框图 `figure-spec-research-content.json`） |
+| `assets/` | 自绘图图库 `figure-gallery/`（研究内容图、技术路线图、架构与框架图、算法流程图）、答辩问答模板 `defense-qa-template.md`、资料清单、全文骨架（Markdown 写作格式）、答辩稿模板、Visio 图规格示例（含分层研究内容框图 `figure-spec-research-content.json`） |
 | `scripts/` | `draw_figure.py` 按规格画自绘图（PNG、SVG、Visio 宏，引擎 `figkit.py`，画法在 `figstyles/`）；`check_logic_chain.py` 论证主线自检；`check_proposal.py` 自审；`build_docx.py` Markdown→docx；`visio_macro.py` 图规格→Visio 宏（附 SVG 预览） |

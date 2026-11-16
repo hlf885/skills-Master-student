@@ -38,7 +38,7 @@ master-proposal/
 │   ├── 11-argument-chain.md            论证主线：题目驱动、层层递进、首尾闭环
 │   └── 12-figure-styles.md             自绘图：问需求、看图库、由用户选画法和格式
 ├── assets/                      # 资料清单、全文骨架、答辩稿与答辩问答模板、图规格示例、自绘图图库 figure-gallery/
-├── scripts/                     # draw_figure.py + figkit.py + figstyles/ / check_logic_chain.py / check_proposal.py / build_docx.py / visio_macro.py
+├── scripts/                     # draw_figure.py + figkit.py + figstyles/ + make_gallery.py / check_logic_chain.py / check_proposal.py / build_docx.py / visio_macro.py
 ├── tests/sample.md              # 脚本冒烟测试样例
 └── CHANGELOG.md
 ```

@@ -2,6 +2,21 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [1.8.0] - 2026-11-16
+
+自绘图图库第二至四期：补齐技术路线图、架构与框架图、算法流程图。画法来源包括学习模板（师兄师姐开题报告）、本仓库作者的迭代、美国和欧洲高校的博士论文以及国际通行的标准画法，来源写在每张卡片上。
+
+### 新增
+- `assets/figure-gallery/technical-route/`：T1 三栏式、T2 竖向主干流程式、T3 空间分层式、T4 V模型（VDI 2206）、T5 工作包与里程碑式。
+- `assets/figure-gallery/architecture/`：A1 分层堆叠式、A2 四要素环形（数字孪生五维模型）、A3 虚实左右映射式（Grieves）、A4 上虚下实分区式、A5 模块与数据流式、A6 闭环自主架构（MAPE-K）。
+- `assets/figure-gallery/flowchart/`：F1 标准程序流程图、F2 离线在线分区式、F3 泳道式（BPMN、UML）、F4 数据流水线式、F5 控制框图式、F6 逐级筛选漏斗式。
+- `scripts/figstyles/technical_route.py`、`architecture.py`、`flowchart.py`；`scripts/make_gallery.py` 重建示例图和总览图。
+- `references/12-figure-styles.md`：三类图的推荐规则、画法来源说明和后续查找博士论文的范围；`references/10-common-mistakes.md` 第 92–94 条。
+
+### 修改
+- `scripts/figkit.py`：Visio 宏中的圆可无填充、带线宽；`scripts/draw_figure.py` 支持四类图。
+- `SKILL.md` 阶段 6、`references/05` 第三节指向四类图库。
+
 ## [1.7.0] - 2026-11-16
 
 依据作者对自绘图的要求：画图前仔细咨询作者需求，把从师兄师姐开题、作者本人迭代和国外博士论文中学到的画法全部展示给用户，由用户选择；并补上口语化检查和答辩问答模板。本次为第一期，完成研究内容图，技术路线图、架构与框架图、算法流程图的图库在后续版本补充。

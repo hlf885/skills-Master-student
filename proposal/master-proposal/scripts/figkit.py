@@ -243,7 +243,7 @@ class Fig:
                 vb_assign(L, "txt", it["t"] or "")
                 a(f"    Set shp = MakeCircle(doc, pg, {X(it['cx'] - it['r'])}, {Y(it['cy'] + it['r'])}, "
                   f"{X(it['cx'] + it['r'])}, {Y(it['cy'] - it['r'])}, txt, \"{rgb(it['fill'])}\", "
-                  f"\"{rgb(it['stroke'])}\", {it['size'] * 0.75:.2f}, \"{rgb(it['color'])}\")")
+                  f"\"{rgb(it['stroke'])}\", {it['size'] * 0.75:.2f}, \"{rgb(it['color'])}\", {it['sw'] * 0.75:.2f})")
             elif k == "image":
                 vb_assign(L, "txt", Path(it["path"]).name)
                 a(f"    Set shp = PlaceImage(pg, gImgDir & txt, {X(it['x'])}, {Y(it['y'] + it['h'])}, "
@@ -335,15 +335,20 @@ Private Function MakeLine(pg As Visio.Page, pts As Variant, lineRGB As String, l
 End Function
 
 Private Function MakeCircle(doc As Visio.Document, pg As Visio.Page, x1 As Double, y1 As Double, x2 As Double, y2 As Double, _
-    txt As String, fillRGB As String, lineRGB As String, sizePt As Double, fontRGB As String) As Visio.Shape
+    txt As String, fillRGB As String, lineRGB As String, sizePt As Double, fontRGB As String, lwPt As Double) As Visio.Shape
     Dim shp As Visio.Shape
     Set shp = pg.DrawOval(x1, y1, x2, y2)
-    shp.CellsU("FillForegnd").FormulaU = fillRGB
-    shp.CellsU("FillPattern").FormulaU = "1"
+    If fillRGB = "none" Then
+        shp.CellsU("FillPattern").FormulaU = "0"
+    Else
+        shp.CellsU("FillForegnd").FormulaU = fillRGB
+        shp.CellsU("FillPattern").FormulaU = "1"
+    End If
     If lineRGB = "none" Then
         shp.CellsU("LinePattern").FormulaU = "0"
     Else
         shp.CellsU("LineColor").FormulaU = lineRGB
+        shp.CellsU("LineWeight").FormulaU = CStr(lwPt) & " pt"
     End If
     shp.Text = txt
     ApplyFont doc, shp, sizePt, True, fontRGB
