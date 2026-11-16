@@ -354,6 +354,12 @@ def main() -> int:
     punct = {k: v for k, v in punct.items() if v}
     if punct:
         warn(f"正文中有 {punct}：少用引号、破折号和箭头（07 第十一节）。")
+    # 1.7.0：口语化说法（用户指出一处后要全文排查）
+    COLLOQ = ["停在哪里", "停在什么位置", "以什么构型停住", "停住", "够不到", "够得着", "会不会", "看似",
+              "搞清", "搞定", "弄清", "卡壳", "大显身手", "合拍", "一下子", "说白了", "啥"]
+    colloq = {w: plain.count(w) for w in COLLOQ if plain.count(w)}
+    if colloq:
+        warn(f"口语化说法 {colloq}：改为书面表述，并全文排查同类说法（07 第十节）。")
     # 1.5.0：数字与单位之间的空格是否统一
     spaced = len(re.findall(r"\d\s+(?:mm|cm|km|m|kg|Hz|ms|s|°)(?![A-Za-z])", plain))
     tight = len(re.findall(r"\d(?:mm|cm|km|m|kg|Hz|ms|s)(?![A-Za-z])", plain))

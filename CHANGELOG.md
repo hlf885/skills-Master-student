@@ -2,6 +2,11 @@
 
 记录跨 Skill 的变化；单个 Skill 的细节见其目录下的 `CHANGELOG.md`。
 
+## 2026-11-16
+
+### 修改
+- `proposal/master-proposal` 升级到 v1.7.0：新增自绘图流程（先问需求、展示图库、给出推荐、由用户选择画法和交付格式），研究内容图九种画法的图库，绘图引擎 `figkit.py` 与 `draw_figure.py`（PNG、SVG、Visio 宏），答辩问答模板，口语化检查。详见该 Skill 的 `CHANGELOG.md`。
+
 ## 2026-11-15（三）
 
 ### 修改

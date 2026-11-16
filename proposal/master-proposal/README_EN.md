@@ -29,6 +29,7 @@ Copy only the `master-proposal` folder.
 
 ## Scripts
 
+- `scripts/draw_figure.py` (engine `figkit.py`, styles in `figstyles/`) — draws self-made figures from a JSON spec as PNG, SVG and/or a Visio VBA macro; `--all-styles` renders every style of a figure type for the user to choose (gallery in `assets/figure-gallery/`, workflow in `references/12-figure-styles.md`).
 - `scripts/check_logic_chain.py` — argument-chain check: prints the first sentence of every paragraph in 1.1/1.2/1.3 for a read-through, counts where the title keywords land, checks the scope paragraph, concept definition, classification and summary sentences, trend/research-content counts, and drafts the argument matrix (see `references/11-argument-chain.md`).
 - `scripts/check_proposal.py` — read-only checks: section lengths, reference count/format/duplicates/citation order, figure/table/equation numbering, research-content length, voice consistency, tense, stock phrases, typos, schedule order.
 - `scripts/build_docx.py` — Markdown → formatted .docx (pandoc + python-docx), superscript citations, OMML equations with right-aligned numbers.

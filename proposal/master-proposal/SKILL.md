@@ -6,7 +6,7 @@ description: >-
   （Visio 作图 + MathType 公式）、创新点、工作计划、GB/T 7714 参考文献（56–66 条）、去 AI 味与预判式写作，
   以及给非本领域答辩专家看的通俗讲解稿。Use for Chinese master's thesis proposal (开题报告) writing.
 metadata:
-  version: "1.6.1"
+  version: "1.7.0"
   repository: "https://github.com/hlf885/skills-Master-student"
   project: "proposal"
 ---
@@ -36,6 +36,7 @@ metadata:
 15. **版面不留大片空白。** 交付前在 Word 多页视图中逐页检查：去掉学校模板表格行的最小行高；工作计划表前不强制分页，改为连续分节，计划标题与计划表同页；图片与图题同页，图放不下时按版面缩小或与其后一段文字对调。分页以 Word 显示为准（细则见 `references/07-style-deai-defensive.md` 第十节）。
 16. **立题依据围绕题目层层递进，全文首尾闭环。** 动笔前先做题目拆解表和论证主线表（每项研究内容对应的 1.1 困难、1.2 不足、1.3 趋势、2.3 关键问题、3.2 方法、创新点、前期数据），交用户确认；1.1 按八段漏斗写（国家与行业 → 需求普遍性 → 依托项目与对象 → 研究边界 → 核心概念与困难 → 现有方法为何不能直接用 → 方法手段为何合适 → 因此与意义），1.2 先排小节再排类别，每小节有与核心问题相关的分类标准、递进排列的类别、本对象定位句和小结，1.3 趋势与研究内容一一对应，并用一句收束语扣回题目；写完做首句串读、关键词落点等六项闭环检查（细则见 `references/11-argument-chain.md`，脚本 `scripts/check_logic_chain.py`）。
 17. **聊天中的修改意见与文件意见同等对待。** 用户在对话里直接提出的修改，逐条记入修改记录表（问题来源写“聊天”）；用户自己在稿中改过的地方视为风格信号，推广到全文同类位置；凡涉及写作规范的，在本轮结束前写入本 Skill 的 `references/` 与 `CHANGELOG.md`，不等下一份“存在的问题”文件（已积累的条目见 `references/10-common-mistakes.md` 第 74–86 条）。
+18. **自绘图先问需求、再看图库、由用户选择。** 研究内容图、技术路线图、架构与框架图、算法流程图，动笔前先按问题清单问清用途、读者档位（懂行、中间、不懂行）、必备要素、可用的场景图、版面和格式要求，再把这类图的全部画法展示给用户并给出推荐，用户选定后才画；交付格式（PNG、SVG、Visio 宏）由用户选择。图库示例只用虚构课题和示意图，不放项目内部资料（细则见 `references/12-figure-styles.md`）。
 
 ## 工作流程
 
@@ -82,9 +83,10 @@ metadata:
 
 ### 阶段 6　作图、公式与图片
 
+- **每张自绘图（研究内容图、技术路线图、架构与框架图、算法流程图）都按 `references/12-figure-styles.md` 的流程走**：问需求（含读者档位：懂行、中间、不懂行）→ 展示图库 → 给出推荐 → 用户挑选 → 用用户内容画候选 → 选定精修 → 用户选择交付格式（PNG、SVG、Visio 宏，可多选）→ 同步改写正文引用句。脚本：`scripts/draw_figure.py`（绘图引擎 `scripts/figkit.py`）。
 - 作图前先说：“请先打开 Microsoft Visio 和 MathType（Word 中出现 MathType 选项卡）。打开后告诉我。”收到确认后再进行。
 - 有电脑操控能力时，直接在 Visio 中绘制；没有时，用 `scripts/visio_macro.py` 由图规格生成 Visio VBA 宏，让用户一键生成可编辑的 Visio 图（`--png` 同时生成插入 Word 用的预览图）。
-- 研究内容框图（图2-1）默认用“场景图＋四步闭环”画法（1.5.0）：左侧研究对象场景图，用编号标出各研究内容作用的部位；右侧四项研究内容竖排，每框只写名称和一句话，箭头旁写每步产出，反馈线闭环；顶部写核心问题，底部写研究目标。先画 2–3 个方向的候选请用户选（细则见 `references/05-research-plan-figures-formulas.md` 5.5 节）。用户偏好表格化的对应关系时，才用分层结构（`assets/figure-spec-research-content.json`）或五层四列画法（`assets/figure-spec-research-content-5layer.json`）；全文各图采用 `references/05-research-plan-figures-formulas.md` 中的统一配色。
+- 研究内容框图（图2-1）的画法由用户从图库中选定（1.7.0）：先问需求，再展示 `assets/figure-gallery/research-content/` 中九种画法的总览图和卡片，按 `references/12-figure-styles.md` 第四节推荐 1–2 种，用户挑 2–3 种后用其内容画候选，选定后再精修；全文各图采用 `references/05-research-plan-figures-formulas.md` 中的统一配色。
 - 公式先以 Word 公式写入，再用 MathType 的“Convert Equations”批量转为 MathType 对象；或提供 LaTeX 由 MathType 直接转换。编号格式统一为（3-1）。公式格式对标学习模板：Times New Roman 五号，变量斜体，不加粗，不用左上标和花体，带编号公式按独立公式排版（细则见 `references/05-research-plan-figures-formulas.md`）。
 - 图题、表题的图号与标题之间用半角空格，黑体五号居中。
 - 场景/实物/代表性工作的图片：按 `references/05-research-plan-figures-formulas.md` 的“图片获取与无水印核查”执行，记录来源，不擦除他人水印；网络受限时按其中 5.2 节用用户电脑上的浏览器取回原图。
@@ -93,13 +95,14 @@ metadata:
 ### 阶段 7　自审与去 AI 味
 
 - 运行 `python scripts/check_logic_chain.py <稿件.md> --keywords 关键词1,关键词2 --matrix 主线表.md`：抽出 1.1、1.2、1.3 各段首句供连读，统计题目关键词落点，检查边界段、定义句、分类句、小结、趋势与研究内容条数，生成论证主线表草稿。
+- 每轮修改后都运行 `check_proposal.py`，其中的口语化词检查（如“停在哪里”“够不到”“会不会”“看似”）要逐条处理，同类说法全文排查。
 - 运行 `python scripts/check_proposal.py <稿件.md> [--specs 图规格目录]`：检查各节字数、参考文献数量与格式、引用顺序与遗漏、图表公式编号、“本文/本课题”混用、高频套话，以及元叙述、自我设限句、“本课题”“项目”频次、插图数量与文献原图、技术路线图成果栏。
 - 对照 `references/08-socratic-review.md` 的自审清单与 `references/10-common-mistakes.md` 逐项核对；用 `references/07-style-deai-defensive.md` 做一遍去 AI 味与预判式写作检查。
 - 修改只针对确有问题之处，不为“显得像人写的”而故意改错或随机换词。
 
 ### 阶段 8　答辩通俗讲解稿
 
-- 另给一份《可能会被问的问题》：分懂行专家和不懂行专家两部分，每题写回答要点和报告中的依据位置（写法见 `references/06-defense-plain-language.md` 第七节）。
+- 另给一份《可能会被问的问题》：分懂行、中间档、不懂行三类专家，每题写回答要点和对应的报告位置（写法见 `references/06-defense-plain-language.md` 第七节，模板见 `assets/defense-qa-template.md`）。
 - 读 `references/06-defense-plain-language.md`，用 `assets/defense-brief-template.md` 生成《答辩通俗讲解稿》：3 分钟能讲完、不含难懂术语、比喻贴切且注明比喻的边界，附“专家可能会问的 10 个问题”及回答要点。
 
 ### 阶段 9　交付
@@ -131,5 +134,6 @@ metadata:
 | `references/09-template-benchmarks.md` | 需要字数、篇幅、插图数量等量化基准时 |
 | `references/10-common-mistakes.md` | 阶段 7 自审、阶段 10 修改 |
 | `references/11-argument-chain.md` | 阶段 4 做主线表，阶段 5 写立题依据，阶段 7 闭环检查 |
-| `assets/` | 资料清单、全文骨架（Markdown 写作格式）、答辩稿模板、Visio 图规格示例（含分层研究内容框图 `figure-spec-research-content.json`） |
-| `scripts/` | `check_logic_chain.py` 论证主线自检；`check_proposal.py` 自审；`build_docx.py` Markdown→docx；`visio_macro.py` 图规格→Visio 宏（附 SVG 预览） |
+| `references/12-figure-styles.md` | 阶段 6，每张自绘图的问需求、图库、推荐、交付流程 |
+| `assets/` | 自绘图图库 `figure-gallery/`、答辩问答模板 `defense-qa-template.md`、资料清单、全文骨架（Markdown 写作格式）、答辩稿模板、Visio 图规格示例（含分层研究内容框图 `figure-spec-research-content.json`） |
+| `scripts/` | `draw_figure.py` 按规格画自绘图（PNG、SVG、Visio 宏，引擎 `figkit.py`，画法在 `figstyles/`）；`check_logic_chain.py` 论证主线自检；`check_proposal.py` 自审；`build_docx.py` Markdown→docx；`visio_macro.py` 图规格→Visio 宏（附 SVG 预览） |

@@ -35,9 +35,10 @@ master-proposal/
 │   ├── 08-socratic-review.md           苏格拉底式追问与自审清单
 │   ├── 09-template-benchmarks.md       9 份样本的量化基准
 │   ├── 10-common-mistakes.md           样本与审阅中出现过的常见问题
-│   └── 11-argument-chain.md            论证主线：题目驱动、层层递进、首尾闭环
-├── assets/                      # 资料清单、全文骨架、答辩稿模板、图规格示例
-├── scripts/                     # check_logic_chain.py / check_proposal.py / build_docx.py / visio_macro.py
+│   ├── 11-argument-chain.md            论证主线：题目驱动、层层递进、首尾闭环
+│   └── 12-figure-styles.md             自绘图：问需求、看图库、由用户选画法和格式
+├── assets/                      # 资料清单、全文骨架、答辩稿与答辩问答模板、图规格示例、自绘图图库 figure-gallery/
+├── scripts/                     # draw_figure.py + figkit.py + figstyles/ / check_logic_chain.py / check_proposal.py / build_docx.py / visio_macro.py
 ├── tests/sample.md              # 脚本冒烟测试样例
 └── CHANGELOG.md
 ```
@@ -78,6 +79,8 @@ Copy-Item -Recurse -Force ".\skills-Master-student\proposal\master-proposal" "$H
 ## 脚本
 
 ```bash
+python scripts/draw_figure.py 图规格.json -o 输出目录 --all-styles --formats png   # 同一内容按全部画法出候选图
+python scripts/draw_figure.py 图规格.json -o 输出目录 --style R8 --formats png,svg,vba  # 选定画法后按用户选择的格式出图
 python scripts/check_logic_chain.py 我的开题报告.md --keywords 关键词1,关键词2 --matrix 主线表.md  # 论证主线自检
 python scripts/check_proposal.py 我的开题报告.md          # 自检（字数、文献、编号、套话……）
 python scripts/build_docx.py 我的开题报告.md -o 开题报告.docx   # 生成 Word（需 pandoc、python-docx）

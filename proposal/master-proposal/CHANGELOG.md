@@ -2,6 +2,25 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [1.7.0] - 2026-11-16
+
+依据作者对自绘图的要求：画图前仔细咨询作者需求，把从师兄师姐开题、作者本人迭代和国外博士论文中学到的画法全部展示给用户，由用户选择；并补上口语化检查和答辩问答模板。本次为第一期，完成研究内容图，技术路线图、架构与框架图、算法流程图的图库在后续版本补充。
+
+### 新增
+- `references/12-figure-styles.md`：自绘图流程（问需求、展示图库、推荐、用户挑选、画候选、精修、用户选择交付格式、同步正文），四类图的问题清单，读者分懂行、中间、不懂行三档，研究内容图推荐规则，图库总索引。
+- `assets/figure-gallery/research-content/`：研究内容图九种画法（R1 分层框图、R2 五层四列、R3 横向闭环链、R4 阶梯递进、R5 环形循环、R6 概念闭环、R7 场景标注、R8 场景图加四步闭环、R9 研究问题与章节对应）的示例图、总览图、说明卡片和示例内容。示例为虚构课题，场景图为示意画。
+- `scripts/figkit.py`：绘图引擎，同一套图元输出 SVG、PNG 和 Visio 宏（含场景图导入、红色重点词、闭环线），Visio 宏已在 Visio Professional 上实测。
+- `scripts/draw_figure.py` 与 `scripts/figstyles/research_content.py`：按规格文件出图，`--all-styles` 一次出全部画法的候选。
+- `assets/defense-qa-template.md`：《可能会被问的问题》模板（懂行、中间、不懂行三类专家）。
+- `SKILL.md` 硬性规则 18：自绘图先问需求、再看图库、由用户选择。
+- `scripts/check_proposal.py`：口语化说法检查。
+- `references/10-common-mistakes.md` 第 87–91 条。
+
+### 修改
+- 阶段 6 增加自绘图流程，图2-1 不再默认 R8；阶段 7 要求每轮运行口语化检查；阶段 8 问答改为三类专家并指向模板。
+- `references/05-research-plan-figures-formulas.md` 第三节和 5.5 节指向 12 号文件；`references/06-defense-plain-language.md` 第七节增加中间档。
+- README 目录与脚本说明。
+
 ## [1.6.1] - 2026-11-15
 
 依据开题初稿 V12 的修改（聊天意见：题目中的“优化”如何落实、注意用词、准备答辩问题）。
