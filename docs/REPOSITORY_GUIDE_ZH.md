@@ -2,7 +2,7 @@
 
 [English](REPOSITORY_GUIDE_EN.md) · [首页](../README.md)
 
-本仓库是**集合仓库**，按硕士培养环节分为三个项目：`proposal/`（开题）、`mid-term/`（中期）、`thesis/`（学位论文）。每个项目下可以有一个或多个 Skill。
+本仓库是**集合仓库**，按硕士培养环节分为三个报告项目：`proposal/`（开题）、`mid-term/`（中期）、`thesis/`（学位论文），以及三个答辩 PPT 项目：`proposal-ppt/`、`mid-term-ppt/`、`thesis-ppt/`。每个项目下可以有一个或多个 Skill；新增项目目录时同步修改 `scripts/validate_skills.py` 中的 `PROJECTS`。
 
 ## 1. 目录与命名
 

@@ -2,7 +2,7 @@
 
 **简体中文** | [English](README_EN.md)
 
-面向工科硕士研究生的学位论文写作 Skill 集合，按培养环节分为三个项目：**开题（proposal）→ 中期（mid-term）→ 学位论文（thesis）**。每个 Skill 以“本领域博士生导师 + 高级工程师”的身份工作：先问清楚、再动笔；不编造文献、数据和成果。
+面向工科硕士研究生的学位论文写作 Skill 集合，按培养环节分为三个报告项目：**开题（proposal）→ 中期（mid-term）→ 学位论文（thesis）**，以及对应的三个答辩 PPT 项目：**proposal-ppt → mid-term-ppt → thesis-ppt**。每个 Skill 以“本领域博士生导师 + 高级工程师”的身份工作：先问清楚、再动笔；不编造文献、数据和成果。
 
 > 适用于 Claude Code、Claude Cowork、claude.ai 自定义 Skill，以及兼容 `SKILL.md` 规范的其他智能体（如 Codex）。
 
@@ -13,6 +13,9 @@
 | [proposal](proposal/README.md) | [`master-proposal`](proposal/master-proposal/README.md) | ✅ v1.0.0 | 开题报告：资料收集与追问、立项必要性、层层递进的研究现状、研究内容/目标/关键问题、评估后的研究方案（Visio + MathType）、56–66 条 GB/T 7714 文献、去 AI 味、答辩通俗讲解稿 |
 | [mid-term](mid-term/README.md) | `master-midterm` | 🗓 规划中 | 中期检查报告：进展对照开题计划、阶段成果、存在问题与调整、后续计划 |
 | [thesis](thesis/README.md) | `master-thesis` | 🗓 规划中 | 学位论文：章节架构、各章写作、图表公式、参考文献、查重与送审前自查、答辩 |
+| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README.md) | ✅ v1.0.0 | 开题答辩 PPT：学习往届篇幅、抽取学校原生模板、依据开题报告逐页生成可编辑 PPT（可编辑公式）、渲染检查 |
+| [mid-term-ppt](mid-term-ppt/README.md) | `master-midterm-ppt` | 🗓 规划中 | 中期检查答辩 PPT |
+| [thesis-ppt](thesis-ppt/README.md) | `master-thesis-ppt` | 🗓 规划中 | 学位论文答辩 PPT |
 
 ## 快速安装（以 master-proposal 为例）
 
@@ -43,7 +46,14 @@ skills-Master-student/
 │   └── master-proposal/           # Skill 本体（SKILL.md、references、assets、scripts、tests）
 ├── mid-term/                      # 项目二：中期检查（规划中）
 │   └── README.md
-└── thesis/                        # 项目三：学位论文（规划中）
+├── thesis/                        # 项目三：学位论文（规划中）
+│   └── README.md
+├── proposal-ppt/                  # 项目四：开题答辩 PPT
+│   ├── README.md
+│   └── master-proposal-ppt/
+├── mid-term-ppt/                  # 项目五：中期检查 PPT（规划中）
+│   └── README.md
+└── thesis-ppt/                    # 项目六：学位论文答辩 PPT（规划中）
     └── README.md
 ```
 
@@ -62,4 +72,4 @@ skills-Master-student/
 
 ## 致谢
 
-方法参考：[hlf885/thesis-writing](https://github.com/hlf885/thesis-writing)、[Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills)、[Imbad0202/academic-research-skills-codex](https://github.com/Imbad0202/academic-research-skills-codex)、[op7418/Humanizer-zh](https://github.com/op7418/Humanizer-zh)、[obra/superpowers](https://github.com/obra/superpowers)。
+方法参考：[hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)（答辩 PPT 工作流与公式编译器，MIT）、[hlf885/thesis-writing](https://github.com/hlf885/thesis-writing)、[Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills)、[Imbad0202/academic-research-skills-codex](https://github.com/Imbad0202/academic-research-skills-codex)、[op7418/Humanizer-zh](https://github.com/op7418/Humanizer-zh)、[obra/superpowers](https://github.com/obra/superpowers)。

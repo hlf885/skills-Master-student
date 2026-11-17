@@ -5,7 +5,7 @@ Checks:
   * every <project>/<skill>/SKILL.md has YAML front matter with name == folder name,
     a non-empty description (<= 1024 chars) and metadata.version;
   * README.md, README_EN.md and CHANGELOG.md exist in each skill; CHANGELOG mentions the version;
-  * the three project folders each have a README.md;
+  * every project folder (three report projects and three PPT projects) has a README.md;
   * relative links in all Markdown files resolve;
   * Python scripts compile; smoke tests run on tests/*.md when check_proposal.py exists.
 Exit code 0 = OK, 1 = problems found.
@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PROJECTS = ["proposal", "mid-term", "thesis"]
+PROJECTS = ["proposal", "mid-term", "thesis", "proposal-ppt", "mid-term-ppt", "thesis-ppt"]
 problems: list[str] = []
 
 

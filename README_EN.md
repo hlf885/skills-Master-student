@@ -2,7 +2,7 @@
 
 [简体中文](README.md) | **English**
 
-A collection of agent skills for Chinese engineering master's students, organised by the three milestones of the degree: **proposal → mid-term review → thesis**. Each skill acts as a doctoral supervisor and senior engineer in the student's field: it asks before it writes, and it never fabricates references, data or results.
+A collection of agent skills for Chinese engineering master's students, organised by the three milestones of the degree: **proposal → mid-term review → thesis**, plus the matching defense-slide projects **proposal-ppt → mid-term-ppt → thesis-ppt**. Each skill acts as a doctoral supervisor and senior engineer in the student's field: it asks before it writes, and it never fabricates references, data or results.
 
 Works with Claude Code, Claude Cowork, claude.ai custom skills and other agents that read `SKILL.md` (e.g. Codex).
 
@@ -11,6 +11,9 @@ Works with Claude Code, Claude Cowork, claude.ai custom skills and other agents 
 | [proposal](proposal/README.md) | [`master-proposal`](proposal/master-proposal/README_EN.md) | ✅ v1.0.0 | Thesis proposal (开题报告) |
 | [mid-term](mid-term/README.md) | `master-midterm` | 🗓 planned | Mid-term review report (中期检查) |
 | [thesis](thesis/README.md) | `master-thesis` | 🗓 planned | Degree thesis (学位论文) |
+| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README_EN.md) | ✅ v1.0.0 | Proposal defense slides (开题答辩PPT) on the school's native template |
+| [mid-term-ppt](mid-term-ppt/README.md) | `master-midterm-ppt` | 🗓 planned | Mid-term review slides |
+| [thesis-ppt](thesis-ppt/README.md) | `master-thesis-ppt` | 🗓 planned | Thesis defense slides |
 
 ## Install
 

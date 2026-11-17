@@ -2,7 +2,7 @@
 
 [简体中文](REPOSITORY_GUIDE_ZH.md) · [Home](../README_EN.md)
 
-This is a **collection repository** with three projects matching the master's degree milestones: `proposal/`, `mid-term/`, `thesis/`. Each project holds one or more skills.
+This is a **collection repository** with three report projects matching the master's degree milestones (`proposal/`, `mid-term/`, `thesis/`) and three defense-slide projects (`proposal-ppt/`, `mid-term-ppt/`, `thesis-ppt/`). Each project holds one or more skills; when adding a project folder, also add it to `PROJECTS` in `scripts/validate_skills.py`.
 
 ## Layout and naming
 

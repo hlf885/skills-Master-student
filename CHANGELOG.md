@@ -2,6 +2,16 @@
 
 记录跨 Skill 的变化；单个 Skill 的细节见其目录下的 `CHANGELOG.md`。
 
+## 2026-11-17
+
+### 新增
+- 新建三个答辩 PPT 项目目录：`proposal-ppt/`、`mid-term-ppt/`、`thesis-ppt/`，后两个暂为规划。
+- `proposal-ppt/master-proposal-ppt` v1.0.0：依据定稿的开题报告，在学校原生模板上生成可编辑的开题答辩 PPT。学习了 hugohe3/ppt-master 的工作流并附带其 LaTeX 转 Office Math 编译器（MIT），默认演示模板为西南科技大学。详见该 Skill 的 `CHANGELOG.md`。
+
+### 修改
+- `scripts/validate_skills.py`：`PROJECTS` 增加三个 PPT 项目目录。
+- 根目录 `README.md`、`README_EN.md` 与仓库管理规范同步更新项目列表。
+
 ## 2026-11-16（二）
 
 ### 修改
