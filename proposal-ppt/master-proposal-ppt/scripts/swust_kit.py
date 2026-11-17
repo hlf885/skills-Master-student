@@ -70,6 +70,7 @@ class Deck:
         self.warnings: list[str] = []
         self._tmp = Path(tempfile.mkdtemp(prefix="swust_kit_"))
         self._toc_items = None
+        self._notes: list[tuple[int, int]] = []
 
     # ------------------------------------------------------------ 页面复制
     def _clone(self, role):
@@ -299,7 +300,7 @@ class Deck:
         for side in ("left", "right"):
             setattr(tf, f"margin_{side}", Cm(0.2))
         tf.margin_top = tf.margin_bottom = Cm(0.05)
-        lines = text if isinstance(text, list) else [text]
+        lines = text if isinstance(text, list) else text.split("\n")
         for i, t in enumerate(lines):
             p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
             p.alignment = {"l": PP_ALIGN.LEFT, "c": PP_ALIGN.CENTER}[align]
@@ -476,6 +477,58 @@ class Deck:
         if label:
             self.text(slide, x + w + 0.3, y + h / 2 - 0.45, 2.2, 0.9, [label], size=13, color=GRAY, fit_check=False, anchor="m")
         return w, h
+
+
+
+    # ------------------------------------------------------------ 组合版式
+    def chain(self, slide, x, y, w, items, h=1.5, gap=0.55, size=15, fills=None):
+        """竖向关键词链: 圆角条 + 向下箭头, 适合背景因果、技术路线步骤。"""
+        for i, t in enumerate(items):
+            yy = y + i * (h + gap)
+            self.bar(slide, x, yy, w, h, t, size=size, fill=(fills[i] if fills else DARK), radius=True)
+            if i < len(items) - 1:
+                self.arrow(slide, x + w / 2 - 0.35, yy + h + 0.05, 0.7, gap - 0.1, "down")
+
+    def class_row(self, slide, y, label, items, gap_text, x=1.4, label_w=3.4, item_w=19.0, h=1.0, size=13.5):
+        """研究现状分类条(仿往届做法): 左侧方向标签, 右侧若干亮蓝做法条, 最后一条灰色写不足。返回占用高度。"""
+        n = len(items) + 1
+        total = n * (h + 0.15) - 0.15
+        self.bar(slide, x, y, label_w, total, label, size=15, fill=DARK, radius=True)
+        xi = x + label_w + 0.3
+        for i, t in enumerate(items):
+            self.bar(slide, xi, y + i * (h + 0.15), item_w, h, t, size=size, fill=BLUE, align="l")
+        self.bar(slide, xi, y + len(items) * (h + 0.15), item_w, h, gap_text, size=size, fill=GRAY, align="l")
+        return total
+
+    # ------------------------------------------------------------ 备注(讲稿)
+    def notes(self, slide, text):
+        """写入本页备注(讲稿)。答辩时照着念, 所以页面上的字可以少。"""
+        tf = slide.notes_slide.notes_text_frame
+        tf.text = text.strip()
+        self._notes.append((len(self.prs.slides) - 5, len(re.findall(r"[\u4e00-\u9fffA-Za-z0-9]", text))))
+        return tf
+
+    def notes_report(self, chars_per_min=250):
+        """只数汉字与字母数字(标点不念), 按每分钟约 250 字估算讲稿时长, 返回 (总字数, 分钟)。"""
+        total = sum(n for _, n in self._notes)
+        for idx, n in self._notes:
+            print(f"  第{idx:>2}页 备注 {n:>4} 字 ≈ {n / chars_per_min * 60:>4.0f} 秒")
+        print(f"  合计 {total} 字 ≈ {total / chars_per_min:.1f} 分钟(按每分钟{chars_per_min}字)")
+        return total, total / chars_per_min
+
+    def blank_page(self, n, label, subtitle):
+        """留白页: 只有页眉, 内容区空着, 供用户自行粘贴涉及个人隐私的成果。"""
+        return self.content(n, label, subtitle)
+
+    def picture_or_placeholder(self, slide, path, x, y, w, h, caption=None, **kw):
+        """图片存在就放图; 不存在时放灰色虚线占位框并在框内写明缺哪张图。"""
+        if path and Path(path).exists():
+            return self.picture(slide, path, x, y, w, h, caption=caption, **kw)
+        self.box(slide, x, y, w, h, fill=LIGHT2, line=GRAY, dash=True)
+        self.text(slide, x, y, w, h, [f"待放入图片：{Path(str(path)).name if path else ''}", caption or ""],
+                  size=12, color=GRAY, align="c", anchor="m", fit_check=False)
+        self.warnings.append(f"第{len(self.prs.slides) - 5}页 缺少图片 {path}")
+        return None
 
     # ------------------------------------------------------------ 保存
     def save(self, path):

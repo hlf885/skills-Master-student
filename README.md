@@ -13,7 +13,7 @@
 | [proposal](proposal/README.md) | [`master-proposal`](proposal/master-proposal/README.md) | ✅ v1.0.0 | 开题报告：资料收集与追问、立项必要性、层层递进的研究现状、研究内容/目标/关键问题、评估后的研究方案（Visio + MathType）、56–66 条 GB/T 7714 文献、去 AI 味、答辩通俗讲解稿 |
 | [mid-term](mid-term/README.md) | `master-midterm` | 🗓 规划中 | 中期检查报告：进展对照开题计划、阶段成果、存在问题与调整、后续计划 |
 | [thesis](thesis/README.md) | `master-thesis` | 🗓 规划中 | 学位论文：章节架构、各章写作、图表公式、参考文献、查重与送审前自查、答辩 |
-| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README.md) | ✅ v1.0.0 | 开题答辩 PPT：学习往届篇幅、抽取学校原生模板、依据开题报告逐页生成可编辑 PPT（可编辑公式）、渲染检查 |
+| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README.md) | ✅ v1.1.0 | 开题答辩 PPT：学习往届篇幅、抽取学校原生模板、依据开题报告逐页生成可编辑 PPT（可编辑公式）、渲染检查 |
 | [mid-term-ppt](mid-term-ppt/README.md) | `master-midterm-ppt` | 🗓 规划中 | 中期检查答辩 PPT |
 | [thesis-ppt](thesis-ppt/README.md) | `master-thesis-ppt` | 🗓 规划中 | 学位论文答辩 PPT |
 

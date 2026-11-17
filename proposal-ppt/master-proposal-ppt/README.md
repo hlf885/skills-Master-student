@@ -11,6 +11,7 @@
 - 提取开题报告 docx 的文字、表格、图片和公式；
 - 按 立题依据 / 研究内容与目标 / 研究方案 / 创新点 / 研究基础与工作条件 / 研究计划 六部分逐页规划并生成 pptx；
 - 公式为 PowerPoint 可编辑的 Office Math（编译器来自 ppt-master），同时带图片回退；
+- 每页写备注讲稿并估算汇报时长（默认 8 到 10 分钟），研究背景可配授权的真实网络照片，研究基础留一页空白放个人成果；
 - 渲染逐页 PNG 和总览图，配合文字溢出警告逐页检查。
 
 ## 安装
@@ -35,7 +36,7 @@ python3 scripts/render_check.py example_deck.pptx render_out
 ```text
 master-proposal-ppt/
 ├── SKILL.md
-├── references/      01 模板解剖 · 02 结构与篇幅 · 03 版式 · 04 文字规则 · 05 ppt-master 笔记 · 06 检查清单
+├── references/      01 模板解剖 · 02 结构与篇幅 · 03 版式 · 04 文字规则 · 05 ppt-master 笔记 · 06 检查清单 · 07 讲稿与图片
 ├── scripts/         swust_kit.py · make_template.py · extract_docx.py · outline_dump.py · render_check.py · omml/
 └── assets/          swust_proposal_template.pptx · example_build.py
 ```
