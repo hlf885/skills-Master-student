@@ -1,110 +1,187 @@
 #!/usr/bin/env python3
-"""示例生成脚本: 用占位内容演示 8 到 10 分钟开题答辩 PPT 的页序、常用版式和备注讲稿。
+"""示例生成脚本 (v1.2.0): 用占位内容演示 8 到 10 分钟开题答辩 PPT 的页序、学术极简规则和按内容变化的版式。
 
-用法: python3 example_build.py <Skill目录> [输出.pptx]
-制作真实答辩 PPT 时, 复制本文件为 build_deck.py, 把占位文字换成开题报告中的内容,
-把占位图换成开题报告中提取出的图片(extract_docx.py 输出的 img/ 目录)和研究背景用的网络实拍图,
-并为每页写好备注讲稿。运行结束会打印每页备注字数和预计时长。
+用法: python3 example_build.py <Skill目录> [输出.pptx] [--theme 学术极简]
+制作真实答辩 PPT 时, 复制本文件为 build_deck.py, 把占位文字换成开题报告中的内容, 把占位图换成
+extract_docx.py 提取的图片和研究背景用的网络实拍图, 为每页写好讲稿和备查 (公式详解、可能的追问)。
+版式说明见 references/03-layout-patterns.md, 审美规则见 references/08-aesthetics-and-style.md。
 """
 import sys
 import tempfile
 from pathlib import Path
 
-SKILL = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[1]
-OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("example_deck.pptx")
+args = [a for a in sys.argv[1:] if not a.startswith("--")]
+THEME = sys.argv[sys.argv.index("--theme") + 1] if "--theme" in sys.argv else "学术极简"
+if THEME in args:
+    args.remove(THEME)
+SKILL = Path(args[0]) if args else Path(__file__).resolve().parents[1]
+OUT = Path(args[1]) if len(args) > 1 else Path("example_deck.pptx")
 sys.path.insert(0, str(SKILL / "scripts"))
-from swust_kit import Deck, BLUE, DARK, GRAY, LIGHT, LIGHT2, RED  # noqa: E402
+from swust_kit import Deck  # noqa: E402
 
 
 def placeholder(path, w=1200, h=800):
     from PIL import Image, ImageDraw
-    im = Image.new("RGB", (w, h), (232, 239, 248))
+    im = Image.new("RGB", (w, h), (241, 244, 248))
     dr = ImageDraw.Draw(im)
-    dr.rectangle([8, 8, w - 9, h - 9], outline=(39, 79, 127), width=6)
-    dr.line([0, 0, w, h], fill=(180, 195, 215), width=4)
-    dr.line([0, h, w, 0], fill=(180, 195, 215), width=4)
+    dr.rectangle([4, 4, w - 5, h - 5], outline=(200, 208, 219), width=4)
+    dr.line([0, 0, w, h], fill=(214, 220, 228), width=3)
+    dr.line([0, h, w, 0], fill=(214, 220, 228), width=3)
     im.save(path)
     return path
 
 
 tmp = Path(tempfile.mkdtemp())
-IMG_A = placeholder(tmp / "a.png", 1200, 900)
-IMG_B = placeholder(tmp / "b.png", 1600, 1100)
-IMG_W = placeholder(tmp / "w.png", 1800, 650)
+IMG_A = placeholder(tmp / "a.png", 1200, 800)
+IMG_T = placeholder(tmp / "t.png", 1000, 1100)
+IMG_W = placeholder(tmp / "w.png", 2000, 900)
 
 d = Deck(SKILL / "assets" / "swust_proposal_template.pptx")
-T, N = d.text, d.notes
+d.set_theme(THEME)
+T, N, H, L = d.text, d.notes, d.headline, d.line
+X0, XW, Y0 = 1.6, 30.6, 5.0
 
-# 1 封面
+# 1 封面 / 2 目录
 s = d.cover(2026, "西南科技大学硕士", "基于某某方法的某类对象某某问题研究", title_size=34)
 N(s, "各位老师好，我是（姓名），指导老师是（导师姓名）老师。我的开题题目是《……》。")
-# 2 目录（8 到 10 分钟版不用 PART 过渡页）
 s = d.toc()
-N(s, "下面我从立题依据、研究内容与目标、研究方案、创新点、研究基础与工作条件、研究计划六个方面进行汇报。")
+N(s, "下面我从立题依据、研究内容与目标、研究方案、创新点、研究基础与工作条件、研究计划六个方面汇报。")
 
-# 3 研究背景：图墙 + 关键词链 + 网络实拍图（页底注明来源与许可）
+# 3 L1 图墙加因果
 s = d.content(1, "立题依据", "研究背景")
-d.picture(s, IMG_A, 1.4, 3.3, 9.8, 6.6, caption="开题报告中的对象图")
-d.picture(s, IMG_A, 11.5, 3.3, 9.8, 6.6, caption="开题报告中的部件图")
-d.picture(s, IMG_A, 1.4, 10.2, 9.8, 6.4, caption="网络实拍图一（装置名）")
-d.picture(s, IMG_A, 11.5, 10.2, 9.8, 6.4, caption="网络实拍图二（装置名）")
-d.chain(s, 22.0, 3.3, 10.5, ["原因一\n短句", "原因二\n短句", "结论\n短句"], h=1.7, gap=0.6, fills=[BLUE, BLUE, RED])
-d.picture(s, IMG_W, 22.0, 10.4, 10.5, 5.0, caption="网络实拍图三（装置名）")
-T(s, 1.4, 16.75, 30.5, 0.5, ["实拍图来源：Wikimedia Commons。图一：作者，许可；图二：作者，许可；图三：作者，许可"], size=8, color=GRAY, fit_check=False)
-N(s, "第一句说行业需求，第二句说对象现状，第三句结合左图说明对象，第四句结合实拍图说明为什么只能用本课题的手段。")
-
-# 4 研究现状：分类条
-s = d.content(1, "立题依据", "国内外研究现状")
-d.class_row(s, 3.3, ["方向一", ""], ["做法一：代表工作，评价", "做法二：代表工作，评价"], "不足：一句话")
-d.class_row(s, 7.5, ["方向二", ""], ["做法一：代表工作，评价", "做法二：代表工作，评价", "做法三：代表工作，评价"], "不足：一句话")
-d.picture(s, IMG_A, 24.0, 3.3, 8.5, 8.4, caption="代表性工作（注明来源）", cap_size=11)
-d.bar(s, 1.4, 14.0, 31.1, 2.85, ["本课题拟……（切入点，一句话）"], size=17, fill=LIGHT, color=DARK, radius=True)
-N(s, "按方向介绍已有做法和各自的不足，最后一句落到本课题的切入点。")
-
-# 5 研究目标与关键问题：双栏
-s = d.content(2, "研究内容与目标", "研究目标与拟解决的关键问题")
-d.bar(s, 1.4, 3.3, 15.3, 1.0, "研究目标", size=17)
+H(s, "一句结论：为什么这个问题现在必须解决")
 for i in range(4):
-    yy = 4.6 + i * 3.1
-    d.circle_num(s, 1.4, yy + 0.65, 1.1, i + 1, fill=BLUE)
-    d.box(s, 2.7, yy, 14.0, 2.75, fill=LIGHT2, line=BLUE, dash=True)
-    T(s, 2.9, yy, 13.6, 2.75, [f"__目标{i + 1}__", "含量化指标的一句话"], size=15, anchor="m", space_after=2)
-d.bar(s, 17.2, 3.3, 15.3, 1.0, "拟解决的关键问题", size=17, fill=RED)
+    d.fig(s, IMG_A, X0 + (i % 2) * 10.0, Y0 + (i // 2) * 6.0, 9.6, 5.6, cap=f"图 占位图 {i + 1}", align="c")
+L(s, 22.3, Y0 + 0.2, 22.3, 16.6, color=d.RULE)
+for i, (a, b) in enumerate([("背景变化一", "一行解释"), ("由此带来的需求", "一行解释"), ("本课题要解决的事", "一行解释")]):
+    y = 5.6 + i * 3.7
+    T(s, 23.0, y, 9.4, 1.0, [a], size=20, color=d.NAVY_HEX if i == 2 else d.INK, bold=True, fit_check=False)
+    T(s, 23.0, y + 1.05, 9.4, 0.9, [b], size=17, color=d.MUTE, fit_check=False)
+    if i < 2:
+        T(s, 23.0, y + 2.05, 2.0, 1.2, ["↓"], size=22, color="9AA3AE", fit_check=False)
+T(s, X0, 17.45, XW, 0.5, ["网络实拍图来源：作者，许可"], size=8, color="9AA3AE", fit_check=False)
+N(s, "（讲稿：背景、需求、本课题要解决的事，约 40 秒。）", ref="可能的追问\n问：……\n答：……（只用开题报告里的内容）")
+
+# 4 L3 演进图示
+s = d.content(1, "立题依据", "国内外研究现状")
+H(s, "一句结论：已有工作做到哪一步，空白在哪里")
+for i, (a, b, hl) in enumerate([("阶段一", "做法与特点", False), ("阶段二", "做法与特点", False), ("本课题切入点", "要做到什么", True)]):
+    x = X0 + i * 10.5
+    d.box(s, x, 5.4, 9.6, 4.6, fill=d.NAVY_HEX if hl else d.TINT, line=None, radius=False)
+    T(s, x + 0.5, 5.75, 8.7, 1.2, [a], size=21, color="FFFFFF" if hl else d.INK, bold=True, fit_check=False)
+    T(s, x + 0.5, 7.05, 8.7, 1.0, [b], size=17, color="DCE4EE" if hl else d.MUTE, fit_check=False)
+    if i < 2:
+        T(s, x + 9.6, 6.9, 0.9, 1.4, ["›"], size=36, color="9AA3AE", align="c", anchor="m", fit_check=False)
+L(s, X0, 11.2, X0 + XW, 11.2, color=d.RULE)
+T(s, X0, 11.55, 6, 0.7, ["尚缺"], size=14, color=d.ACC, bold=True, fit_check=False)
 for i in range(3):
-    yy = 4.6 + i * 4.15
-    d.bar(s, 17.2, yy, 2.4, 3.8, f"问题{i + 1}", size=15, fill=DARK)
-    d.box(s, 19.7, yy, 12.8, 3.8, fill=LIGHT2, line=RED, dash=True)
-    T(s, 19.9, yy, 12.4, 3.8, ["关键问题全称"], size=16, anchor="m")
-N(s, "逐条念研究目标及其指标，再念三个关键问题。")
+    T(s, X0 + i * 10.5, 12.3, 9.6, 2.4, ["与上方阶段对应的一条研究空白"], size=18, color=d.INK)
+N(s, "（讲稿：两类做法、各自不足、本课题切入点，约 50 秒。）")
 
-# 6 研究方案：两项研究一页 + 可编辑公式
+# 5 L4 三线表
+s = d.content(1, "立题依据", "国内外研究现状")
+H(s, "一句结论：几类方法各有什么局限")
+d.rule_table(s, X0, Y0 + 0.1, [4.0, 10.6, 7.4], [
+    ["研究方向", "代表方法", "特点"],
+    ["方向一", "方法 A", "优点与局限"], ["", "方法 B", "优点与局限"],
+    ["方向二", "方法 C", "优点与局限"], ["", "方法 D", "优点与局限"]],
+    [1.0] + [1.6] * 4, size=17, head_size=14)
+d.fig(s, IMG_A, 24.6, Y0 + 0.1, 7.6, 5.0, cap="图 代表性方法示意", align="c")
+L(s, X0, 15.75, X0 + XW, 15.75, color=d.RULE)
+T(s, X0, 16.0, XW, 1.0, ["本课题：一句话说明怎么做"], size=18, color=d.NAVY_HEX, bold=True, fit_check=False)
+N(s, "（讲稿：按方向讲方法与局限，约 40 秒。）")
+
+# 6 L5 整页大图
+s = d.content(2, "研究内容与目标", "研究内容")
+H(s, "一句结论：几项研究内容分别回答什么问题")
+d.fig(s, IMG_W, X0, Y0, XW, 12.6, align="c")
+N(s, "（讲稿：逐项讲研究内容及其衔接，约 40 秒。）")
+
+# 7 L8 分栏细线
+s = d.content(2, "研究内容与目标", "研究目标与拟解决的关键问题")
+H(s, "一句结论：目标怎么检验，难点在哪里")
+T(s, X0, Y0, 12, 0.7, ["研究目标"], size=14, color=d.MUTE, bold=True, fit_check=False)
+for i in range(4):
+    y = Y0 + 0.9 + i * 2.85
+    if i:
+        L(s, X0, y - 0.2, 16.2, y - 0.2, color=d.RULE)
+    T(s, X0, y, 3.9, 2.4, [f"目标{i + 1}"], size=18, color=d.INK, bold=True, anchor="m", fit_check=False)
+    T(s, 5.6, y, 10.6, 2.4, ["指标写成 __可检验的数字__"], size=18, color=d.INK, anchor="m")
+L(s, 17.1, Y0, 17.1, 17.0, color=d.RULE)
+T(s, 17.9, Y0, 12, 0.7, ["拟解决的关键问题"], size=14, color=d.MUTE, bold=True, fit_check=False)
+for i in range(3):
+    y = Y0 + 0.9 + i * 3.8
+    if i:
+        L(s, 17.9, y - 0.2, X0 + XW, y - 0.2, color=d.RULE)
+    T(s, 17.9, y, 2.2, 3.3, [f"问题{i + 1}"], size=15, color=d.ACC, bold=True, anchor="m", fit_check=False)
+    T(s, 20.2, y, 12.0, 3.3, ["关键问题的短句表述"], size=19, color=d.INK, bold=True, anchor="m")
+N(s, "（讲稿：目标与关键问题，约 45 秒。）", ref="关键问题各自难在哪里：……")
+
+# 8 L6 左图右步骤
+s = d.content(3, "研究方案", "技术路线")
+H(s, "一句结论：总体思路是什么")
+d.fig(s, IMG_T, X0, Y0, 15.6, 12.5, align="c")
+L(s, 17.9, Y0, 17.9, 17.0, color=d.RULE)
+T(s, 18.6, Y0, 12, 0.7, ["基本思路"], size=14, color=d.MUTE, bold=True, fit_check=False)
+T(s, 18.6, Y0 + 0.8, 13.6, 2.8, ["一两行写清总体思路"], size=17, color=d.NAVY_HEX, bold=True)
+for i in range(4):
+    y = 9.0 + i * 2.05
+    L(s, 18.6, y - 0.25, X0 + XW, y - 0.25, color=d.RULE)
+    T(s, 18.6, y, 1.2, 1.4, [str(i + 1)], size=24, color=d.NAVY_HEX, bold=True, anchor="m", fit_check=False)
+    T(s, 19.9, y, 12.3, 1.4, ["步骤短句"], size=18, color=d.INK, anchor="m")
+N(s, "（讲稿：技术路线，约 35 秒。）")
+
+# 9 L7 图加公式
 s = d.content(3, "研究方案", "研究一：××　研究二：××")
-d.picture(s, IMG_B, 1.4, 3.2, 15.2, 10.8, caption="研究一：方法流程图")
-d.picture(s, IMG_B, 17.2, 3.2, 15.3, 10.8, caption="研究二：方法流程图")
-d.formula(s, 2.0, 14.6, r"M_c=\left\{Y\in S\mid \Phi_c(Y)=1\right\}", size=17)
-d.formula(s, 17.8, 14.6, r"\Pi^{*}=\underset{\Pi}{\mathrm{lexmin}}\left(f_1,\ f_2\right)", size=17)
-N(s, "按左右两张图分别讲研究一和研究二，每项三到四句。")
+H(s, "一句结论：两项研究分别怎么做")
+d.fig(s, IMG_A, X0, Y0, 14.8, 8.2, cap="图 研究一流程", align="c")
+d.fig(s, IMG_A, 17.4, Y0, 14.8, 8.2, cap="图 研究二流程", align="c")
+L(s, 16.5, Y0, 16.5, 17.2, color=d.RULE)
+d.formula(s, 2.0, 13.6, r"y=f(x;\theta)", size=20, label="(3-1)")
+T(s, X0, 15.1, 14.6, 2.0, ["一行说明公式在做什么"], size=16, color=d.INK)
+d.formula(s, 17.8, 13.6, r"\theta^{*}=\arg\min_{\theta}\ J(\theta)", size=20, label="(3-2)")
+T(s, 17.4, 15.1, 14.8, 2.0, ["一行说明公式在做什么"], size=16, color=d.INK)
+N(s, "（讲稿：口语解释两项研究，不念符号，约 50 秒。）",
+  ref="公式详解\n【式 3-1】每个符号的含义；为什么这样设计；取值怎么定。\n可能的追问\n问：……\n答：……")
 
-# 7 研究基础：关键数字色块
+# 10 L4 三线表 (创新点)
+s = d.content(4, "创新点", "本课题可能的创新之处")
+H(s, "一句结论：创新分别解决什么")
+d.rule_table(s, X0, Y0 + 0.3, [10.8, 9.8, 10.0], [
+    ["创新点", "已有方法", "本课题"],
+    ["1　创新点一名称", "已有做法", "本课题做法"],
+    ["2　创新点二名称", "已有做法", "本课题做法"]],
+    [1.2, 4.3, 4.3], size=19, head_size=15, colors=[d.INK, d.MUTE, d.NAVY_HEX])
+N(s, "（讲稿：两点创新，约 35 秒。）")
+
+# 11 L9 大数字加图
 s = d.content(5, "研究基础与工作条件", "研究基础：前期工作")
-d.picture(s, IMG_A, 1.4, 3.3, 15.0, 13.6, caption="前期工作截图")
-for i, (a, b, c) in enumerate([("不可行", "142", GRAY), ("部分可行", "278", BLUE), ("可行", "30", RED)]):
-    d.bar(s, 17.1 + i * 5.2, 9.8, 5.0, 2.4, [b, a], size=17, fill=c)
-N(s, "说明已完成的工作和关键数字，并保留开题报告中的限定说明。")
+H(s, "一句结论：前期结果说明了什么")
+d.fig(s, IMG_T, X0, Y0, 14.6, 12.4, cap="图 前期结果", align="c")
+L(s, 16.9, Y0, 16.9, 17.2, color=d.RULE)
+T(s, 17.6, Y0 + 0.8, 14.6, 4.0, ["已完成工作一", "已完成工作二", "已完成工作三"], size=17, color=d.INK, bullet="·", spacing=1.2, space_after=6)
+L(s, 17.6, 10.1, X0 + XW, 10.1, color=d.RULE)
+for i, (n, t) in enumerate([("000", "数字一"), ("000", "数字二"), ("00", "最重要的数字")]):
+    d.big_number(s, 17.6 + i * 5.0, 11.2, 4.8, n, t, color=d.NAVY_HEX if i == 2 else d.INK)
+T(s, 17.6, 14.6, 14.6, 1.0, ["一句结论"], size=18, color=d.INK, bold=True, fit_check=False)
+T(s, 17.6, 15.6, 14.6, 1.0, ["限定语，如 基于临时模型"], size=13, color=d.MUTE, fit_check=False)
+N(s, "（讲稿：前期工作与结果，约 35 秒。）")
 
-# 8 研究基础：个人成果留白页（只有页眉，内容区空白）
+# 12 留白页
 s = d.blank_page(5, "研究基础与工作条件", "研究基础：个人成果")
-N(s, "（此页留白：粘贴比赛获奖、论文、专利等个人成果后，在这里补充对应讲稿，约30秒。）")
+N(s, "（此页留白：粘贴个人成果后补充讲稿，约 30 秒。）")
 
-# 9 研究计划
+# 13 计划
 s = d.content(6, "研究计划", "学位论文工作计划")
-d.table(s, 1.4, 3.4, 31.1, [["时间", "研究内容", "预期效果"]] +
-        [[f"阶段{i + 1}", "与开题报告工作计划表一致", "预期效果"] for i in range(6)],
-        col_w=[4.6, 16.0, 10.5], row_h=1.68, size=15, head_size=16, align_cols="cll", bold_first_col=True)
-N(s, "研究计划如表。")
+H(s, "一句结论：按什么节奏推进，何时中期、何时答辩")
+d.rule_table(s, X0, Y0 + 0.1, [6.2, 14.6, 9.8], [["时间", "研究内容", "预期效果"]] + [["0000.00 至 0000.00", "内容", "效果"]] * 6,
+             [1.0] + [1.6] * 6, size=17, head_size=14, first_bold=False)
+N(s, "（讲稿：研究计划，约 15 秒。）")
 
+# 14 结束
 s = d.end(2026, "西南科技大学硕士", date="2026年11月")
 N(s, "以上是我的开题汇报，请各位老师批评指正，谢谢。")
+
 d.save(OUT)
 print("saved", OUT)
 d.notes_report()

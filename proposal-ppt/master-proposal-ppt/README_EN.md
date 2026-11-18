@@ -12,6 +12,8 @@ Builds an editable Chinese master's thesis proposal defense deck (开题答辩 P
 - Plan and generate the six standard parts slide by slide;
 - Native, editable Office Math equations (compiler vendored from ppt-master) with image fallback;
 - Speaker notes on every slide with talk-time estimate (default 8 to 10 minutes), licensed real photos for the background slide, and a blank slide for personal achievements;
+- Style gallery first: five deck-wide styles rendered with the user's own content, the user picks one; then one consistent rule set across the deck while each slide's layout follows its content (no "AI look": no colored text bars, number circles, dashed boxes or red bold);
+- Equation slides carry a reference section in the notes (symbol definitions, design rationale, likely questions), excluded from talk time;
 - Render every slide to PNG plus contact sheets, with text overflow warnings.
 
 ## Install

@@ -59,6 +59,21 @@ def _rgb(c):
     return c if isinstance(c, RGBColor) else RGBColor.from_string(c.lstrip("#"))
 
 
+# 风格样页可选的整套风格。每套只规定颜色与字号规则, 页面版式按内容选择(见 references/08)。
+THEMES = {
+    "学术极简": dict(NAVY="274F7F", INK="1F2933", MUTE="6B7280", RULE="C8D0DB", ACC="A33B2B", TINT="F1F4F8", head=22, body=18, panels="none", hl="274F7F", gap="A33B2B",
+                 desc="模板深蓝做标题, 正文深灰, 浅灰细线分区, 暗红只标研究空白"),
+    "期刊黑白": dict(NAVY="1F2933", INK="1F2933", MUTE="6B7280", RULE="BFC5CC", ACC="256DB7", TINT="F3F4F6", head=22, body=18, panels="none", hl="256DB7", gap="1F2933",
+                 desc="近黑标题, 全篇黑白灰, 只用模板亮蓝标本课题, 像期刊插图一样克制"),
+    "浅色分区": dict(NAVY="274F7F", INK="1F2933", MUTE="5B6675", RULE="D5DCE5", ACC="B5651D", TINT="EAF0F6", head=22, body=18, panels="tint", hl="274F7F", gap="B5651D",
+                 desc="用无边框浅蓝灰底块分组, 不用线框, 赭色点缀研究空白"),
+    "深色重点": dict(NAVY="274F7F", INK="1F2933", MUTE="6B7280", RULE="C8D0DB", ACC="C9A227", TINT="F1F4F8", head=22, body=18, panels="dark", hl="1E3F66", gap="A33B2B",
+                 desc="其余部分保持极简, 只把本课题的做法和关键数据放进深蓝反白块, 重点一眼可见"),
+    "大字结论": dict(NAVY="274F7F", INK="1F2933", MUTE="6B7280", RULE="C8D0DB", ACC="A33B2B", TINT="F1F4F8", head=28, body=20, panels="none", hl="274F7F", gap="A33B2B",
+                 desc="结论句放大到 28 磅, 每页要点更少, 证据靠图和大数字, 适合讲述节奏快的汇报"),
+}
+
+
 class Deck:
     def __init__(self, template: str | os.PathLike):
         self.prs = Presentation(str(template))
@@ -293,6 +308,7 @@ class Deck:
         return shp
 
     def bar(self, slide, x, y, w, h, text, size=16, fill=DARK, color=WHITE, align="c", bold=True, radius=False):
+        """[v1.1 旧版式, 有 AI 味, 新做的 PPT 不再使用, 见 references/08]"""
         shp = self.box(slide, x, y, w, h, fill=fill, line=None, radius=radius)
         tf = shp.text_frame
         tf.word_wrap = True
@@ -309,7 +325,7 @@ class Deck:
 
     def card(self, slide, x, y, w, h, title, paras, size=14, title_size=16, title_h=1.0,
              fill=LIGHT2, line=DARK, dash=True, bullet=None, title_fill=DARK, spacing=1.2):
-        """带深蓝标题条的卡片。"""
+        """[v1.1 旧版式, 有 AI 味, 新做的 PPT 不再使用, 见 references/08] 带深蓝标题条的卡片。"""
         self.box(slide, x, y, w, h, fill=fill, line=line, dash=dash)
         self.bar(slide, x, y, w, title_h, title, size=title_size, fill=title_fill)
         return self.text(slide, x + 0.15, y + title_h + 0.15, w - 0.3, h - title_h - 0.25, paras,
@@ -326,6 +342,7 @@ class Deck:
         return shp
 
     def circle_num(self, slide, x, y, d, n, fill=DARK, size=14):
+        """[v1.1 旧版式, 有 AI 味, 新做的 PPT 不再使用, 见 references/08]"""
         shp = slide.shapes.add_shape(MSO_SHAPE.OVAL, Cm(x), Cm(y), Cm(d), Cm(d))
         shp.fill.solid()
         shp.fill.fore_color.rgb = _rgb(fill)
@@ -480,9 +497,92 @@ class Deck:
 
 
 
+
+    # ------------------------------------------------------------ 细线
+    def line(self, slide, x1, y1, x2, y2, color="D0D7E2", width=0.75, dash=False):
+        """细线(分隔、列边界)。只作结构线, 不作标题下的装饰线。"""
+        from pptx.enum.shapes import MSO_CONNECTOR
+        c = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, Cm(x1), Cm(y1), Cm(x2), Cm(y2))
+        c.line.color.rgb = _rgb(color)
+        c.line.width = Pt(width)
+        if dash:
+            ln = c.line._get_or_add_ln()
+            pd = etree.SubElement(ln, qn("a:prstDash"))
+            pd.set("val", "dash")
+        return c
+
+
+    # ------------------------------------------------------------ 学术极简规则(v1.2.0)
+    # 全篇一套规则: 模板深蓝只用于标题和少数重点, 正文深灰黑, 一个暗红点缀, 浅灰细线分区,
+    # 不用色条、编号圆、虚线框、通栏色块; 图注灰色小字; 每页顶部一句结论句。
+    INK, MUTE, RULE, ACC, NAVY_HEX, TINT = "1F2933", "6B7280", "C8D0DB", "A33B2B", "274F7F", "F1F4F8"
+
+    HEAD_SIZE = 22
+    THEME = "学术极简"
+
+    def set_theme(self, name):
+        """切换整套风格(全篇统一的颜色、字号规则)。版式仍按每页内容选择, 不随风格固定。"""
+        th = THEMES[name]
+        self.THEME = name
+        for k in ("INK", "MUTE", "RULE", "ACC", "TINT"):
+            setattr(self, k, th[k])
+        self.NAVY_HEX = th["NAVY"]
+        self.HEAD_SIZE = th["head"]
+        return th
+
+    def headline(self, slide, text, size=None):
+        """内容区顶部的结论句: 这一页要让评委记住的一句话。"""
+        size = size or self.HEAD_SIZE
+        h = 1.4 if size <= 24 else 1.8
+        return self.text(slide, 1.6, 3.15, 30.7, h, [text], size=size, color=self.NAVY_HEX, bold=True, fit_check=False)
+
+    def fig(self, slide, path, x, y, w, h, cap=None, cap_size=12, align="l"):
+        """图片等比放入框内(顶部对齐), 下方灰色小字图注; 返回图片底边 y。"""
+        from PIL import Image
+        ph = h - (0.8 if cap else 0)
+        with Image.open(path) as im:
+            iw, ih = im.size
+        r = min(w / iw, ph / ih)
+        pw, pph = iw * r, ih * r
+        px = x + (w - pw) / 2 if align == "c" else x
+        slide.shapes.add_picture(str(path), Cm(px), Cm(y), Cm(pw), Cm(pph))
+        if cap:
+            cx, cw = (x, w) if align == "c" else (px, max(pw, w))
+            self.text(slide, cx, y + pph + 0.1, cw, 0.8, [cap], size=cap_size, color=self.MUTE, align=align if align == "c" else "l", fit_check=False)
+        return y + pph
+
+    def rule_table(self, slide, x, y, col_w, rows, row_h, size=16, head_size=14, first_bold=True, colors=None, align=None):
+        """学术三线表: 顶线、表头下线、底线, 行间浅灰细线, 无竖线无底色。rows[0] 为表头。返回底边 y。"""
+        W = sum(col_w)
+        self.line(slide, x, y, x + W, y, color=self.INK, width=1.5)
+        yy = y + 0.05
+        for ri, row in enumerate(rows):
+            h = row_h[ri] if isinstance(row_h, (list, tuple)) else row_h
+            xx = x
+            for ci, cell in enumerate(row):
+                c = self.MUTE if ri == 0 else (colors[ci] if colors else self.INK)
+                b = ri == 0 or (first_bold and ci == 0)
+                al = (align[ci] if align else "l")
+                self.text(slide, xx + 0.15, yy, col_w[ci] - 0.3, h, cell.split("\n") if isinstance(cell, str) else cell,
+                          size=head_size if ri == 0 else size, color=c, bold=b, anchor="m", align=al,
+                          spacing=1.12, space_after=0, fit_check=False)
+                xx += col_w[ci]
+            yy += h
+            if ri == 0:
+                self.line(slide, x, yy, x + W, yy, color=self.INK, width=0.75)
+            elif ri < len(rows) - 1:
+                self.line(slide, x, yy, x + W, yy, color=self.RULE, width=0.5)
+        self.line(slide, x, yy + 0.03, x + W, yy + 0.03, color=self.INK, width=1.5)
+        return yy
+
+    def big_number(self, slide, x, y, w, number, label, color=None, size=40, label_color=None):
+        """大号数字 + 小字说明, 不加底色框。"""
+        self.text(slide, x, y, w, size / 72 * 2.54 * 1.3, [number], size=size, color=color or self.NAVY_HEX, bold=True, fit_check=False)
+        self.text(slide, x, y + size / 72 * 2.54 * 1.3, w, 1.0, [label], size=14, color=label_color or self.MUTE, fit_check=False)
+
     # ------------------------------------------------------------ 组合版式
     def chain(self, slide, x, y, w, items, h=1.5, gap=0.55, size=15, fills=None):
-        """竖向关键词链: 圆角条 + 向下箭头, 适合背景因果、技术路线步骤。"""
+        """[v1.1 旧版式, 有 AI 味, 新做的 PPT 不再使用, 见 references/08] 竖向关键词链: 圆角条 + 向下箭头, 适合背景因果、技术路线步骤。"""
         for i, t in enumerate(items):
             yy = y + i * (h + gap)
             self.bar(slide, x, yy, w, h, t, size=size, fill=(fills[i] if fills else DARK), radius=True)
@@ -490,7 +590,7 @@ class Deck:
                 self.arrow(slide, x + w / 2 - 0.35, yy + h + 0.05, 0.7, gap - 0.1, "down")
 
     def class_row(self, slide, y, label, items, gap_text, x=1.4, label_w=3.4, item_w=19.0, h=1.0, size=13.5):
-        """研究现状分类条(仿往届做法): 左侧方向标签, 右侧若干亮蓝做法条, 最后一条灰色写不足。返回占用高度。"""
+        """[v1.1 旧版式, 有 AI 味, 新做的 PPT 不再使用, 见 references/08] 研究现状分类条(仿往届做法): 左侧方向标签, 右侧若干亮蓝做法条, 最后一条灰色写不足。返回占用高度。"""
         n = len(items) + 1
         total = n * (h + 0.15) - 0.15
         self.bar(slide, x, y, label_w, total, label, size=15, fill=DARK, radius=True)
@@ -501,10 +601,13 @@ class Deck:
         return total
 
     # ------------------------------------------------------------ 备注(讲稿)
-    def notes(self, slide, text):
-        """写入本页备注(讲稿)。答辩时照着念, 所以页面上的字可以少。"""
+    def notes(self, slide, text, ref=None):
+        """写入本页备注。text 是要念的讲稿; ref 是备查内容(公式详解、可能的追问), 不念, 不计入时长。"""
         tf = slide.notes_slide.notes_text_frame
-        tf.text = text.strip()
+        body = text.strip()
+        if ref:
+            body += "\n\n【备查，不念】\n" + ref.strip()
+        tf.text = body
         self._notes.append((len(self.prs.slides) - 5, len(re.findall(r"[\u4e00-\u9fffA-Za-z0-9]", text))))
         return tf
 

@@ -2,6 +2,28 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [1.2.0] - 2026-11-18
+
+依据第二轮用户修改意见（存在的问题-V2）修订：第二版配色差、创新点页 AI 味重、字太小；公式要在备注里详细解释以防被问；改之前先确认需求、学习别人好的做法。另据用户要求：使用本 Skill 时要提供多种高质量、无 AI 味的风格案例供用户选择；选定风格后全篇统一，但不能页页一个样。修订前对照学习了 ppt-master、anthropics/skills 的 pptx 技能、academic-pptx-skill、MiniMax pptx-generator 和讨论 AI 幻灯片通病的文章。
+
+### 新增
+- 硬性规则 8：先确认需求，风格样页先行，由用户选风格。
+- 硬性规则 9：去 AI 味；全篇统一规则但版式按内容变化，相邻两页不用同一种版式，全篇至少 5 种；每个内容页顶部一句结论句；正文不低于 16 磅。
+- `references/08-aesthetics-and-style.md`：宗旨与需求确认、AI 味清单与改法、全篇统一规则、版式多样要求、风格样页流程、公式页备注写法。
+- `scripts/style_gallery.py`：同一组内容按五套风格（学术极简、期刊黑白、浅色分区、深色重点、大字结论）各出 4 张不同版式的样页，可 `--content` 换成用户自己的内容，`--render` 输出拼图。
+- `assets/style_gallery/`：五套风格样页拼图（虚构示例内容）。
+- `swust_kit.py`：`THEMES` 与 `set_theme()`、`headline()`、`fig()`（灰色小字图注）、`rule_table()`（学术三线表）、`line()`、`big_number()`；`notes(text, ref=)` 备查部分不计入时长。
+- 阶段 0（确认宗旨与需求）和阶段 4.5（风格样页）。
+
+### 修改
+- `references/03-layout-patterns.md` 重写为按内容选版式的 L1 到 L9；v1.1 的 P1 到 P24 退役。
+- `references/04-text-rules.md`：停用红色加粗，强调改为结论句和主色加粗；字号表上调（正文 17 到 20 磅）。
+- `references/06-qa-checklist.md`：增加审美与去 AI 味、版式多样、公式备查检查项。
+- `references/07-notes-and-images.md`：增加备查部分写法。
+- `references/01`、`02`、`05`：去掉沿用往届色条、虚线框、红色强调的建议。
+- `assets/example_build.py` 重写为学术极简示例，演示 L1 到 L9，`--theme` 切换风格。
+- `swust_kit.py`：`bar()`、`card()`、`circle_num()`、`chain()`、`class_row()` 标为旧版式，不再推荐。
+
 ## [1.1.0] - 2026-11-17
 
 依据第一轮用户修改意见（存在的问题-V1）修订：汇报限时 8 到 10 分钟，初稿 34 页过长过密；要求图文并茂、研究背景补充真实网络图片、每页写备注讲稿、研究基础留一页空白放个人成果，并以用户推荐的往届 PPT 为详略基准。

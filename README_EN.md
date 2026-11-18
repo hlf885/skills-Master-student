@@ -11,7 +11,7 @@ Works with Claude Code, Claude Cowork, claude.ai custom skills and other agents 
 | [proposal](proposal/README.md) | [`master-proposal`](proposal/master-proposal/README_EN.md) | ✅ v1.0.0 | Thesis proposal (开题报告) |
 | [mid-term](mid-term/README.md) | `master-midterm` | 🗓 planned | Mid-term review report (中期检查) |
 | [thesis](thesis/README.md) | `master-thesis` | 🗓 planned | Degree thesis (学位论文) |
-| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README_EN.md) | ✅ v1.1.0 | Proposal defense slides (开题答辩PPT) on the school's native template |
+| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README_EN.md) | ✅ v1.2.0 | Proposal defense slides (开题答辩PPT) on the school's native template, with a style gallery to choose from |
 | [mid-term-ppt](mid-term-ppt/README.md) | `master-midterm-ppt` | 🗓 planned | Mid-term review slides |
 | [thesis-ppt](thesis-ppt/README.md) | `master-thesis-ppt` | 🗓 planned | Thesis defense slides |
 
