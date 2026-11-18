@@ -17,6 +17,11 @@
 - `scripts/validate_skills.py`：`PROJECTS` 增加三个 PPT 项目目录。
 - 根目录 `README.md`、`README_EN.md` 与仓库管理规范同步更新项目列表。
 
+## 2026-11-18
+
+### 修改
+- `proposal/master-proposal` 升级到 v1.8.1：答辩问答模板增加基础模型怎么建的出题方向。详见该 Skill 的 `CHANGELOG.md`。
+
 ## 2026-11-16（二）
 
 ### 修改
