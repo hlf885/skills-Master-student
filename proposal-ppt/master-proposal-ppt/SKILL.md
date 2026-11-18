@@ -9,7 +9,7 @@ description: >-
   默认演示模板为西南科技大学，可从任意学校的往届 PPT 抽取模板替换。
   Use for Chinese master's thesis proposal defense slides (开题答辩PPT, 开题PPT, proposal defense deck).
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   repository: "https://github.com/hlf885/skills-Master-student"
   project: "proposal-ppt"
 ---
@@ -31,7 +31,7 @@ metadata:
 5. **往届 PPT 只学结构。** 往届同学的 PPT 只用于学习页面结构、篇幅和版式，不复制其文字和图片；不得把往届 PPT 或未公开的开题报告上传到公开仓库，仓库里只保留统计结果。
 6. **每页必须有备注讲稿，总时长按用户要求控制。** 用户答辩时照着备注念、同时翻页，所以页面文字只留关键词、短句和图，完整的话写进备注。汇报时长默认按 8 到 10 分钟准备，讲稿按每分钟约 250 字（不计标点）控制总量，`swust_kit.notes_report()` 会逐页估算。页面上有公式的，备注还要写备查部分（`notes(slide, 讲稿, ref=备查)`，不计入时长）：逐个解释符号、设计理由和取值，并列出可能的追问与回答，内容只来自开题报告。
 7. **研究基础留一页空白。** 研究基础与工作条件部分固定留一页只有页眉的空白页，供用户自己粘贴涉及个人隐私的比赛获奖、论文、专利等成果，不替用户填写，也不从记忆或其他文件里找。
-8. **先确认需求，风格样页先行，由用户选。** 动手前先确认 PPT 的宗旨和用户在意什么；做整套之前，用 `scripts/style_gallery.py` 以用户自己的 4 页代表性内容出多套风格样页（学术极简、期刊黑白、浅色分区、深色重点、大字结论），渲染成图让用户挑，不凭自己的喜好定风格。见 `references/08-aesthetics-and-style.md`。
+8. **先确认需求，风格样页先行，由用户选。** 动手前先确认 PPT 的宗旨和用户在意什么；做整套之前，用 `scripts/style_gallery.py` 以用户自己的 4 页代表性内容出多套风格样页（V3实例、学术极简、期刊黑白、浅色分区、深色重点、大字结论；V3实例 是用户反馈很好的整套做法，默认推荐），渲染成图让用户挑，不凭自己的喜好定风格。见 `references/08-aesthetics-and-style.md`。
 9. **去 AI 味，全篇统一但不能页页一个样。** 选定风格后，颜色、字号、结论句、图注、细线这些规则全篇统一；每页的版式按内容选（分栏、三线表、演进图示、整页大图、图加公式、大数字加图），相邻两页不用同一种版式，全篇至少 5 种。每个内容页顶部一句结论句；正文不低于 16 磅；不用彩色条垫文字、编号圆、虚线框、通栏深色标题条、红色加粗、装饰线。版式写法见 `references/03-layout-patterns.md`。
 10. **生成后必须渲染检查。** 用 `scripts/render_check.py` 渲染全部页面，逐页看是否溢出、遮挡、错位、图片变形、字太小；`swust_kit` 打印的溢出警告必须逐条处理或确认无误后再交付。
 
@@ -39,7 +39,7 @@ metadata:
 
 ### 阶段 0　确认宗旨与需求
 
-先复述理解：PPT 的宗旨是让评委在限定时间里听懂并记住 做什么、为什么、怎么做、凭什么能做成。再确认汇报时长、用户最在意什么、有没有不喜欢的样子（往届或上一版的哪一页）。收到修改意见时同样先复述、确认，再改。用户还没给开题报告时，可以先给他看 `assets/style_gallery/` 里的五套风格样例。
+先复述理解：PPT 的宗旨是让评委在限定时间里听懂并记住 做什么、为什么、怎么做、凭什么能做成。再确认汇报时长、用户最在意什么、有没有不喜欢的样子（往届或上一版的哪一页）。收到修改意见时同样先复述、确认，再改。用户还没给开题报告时，可以先给他看 `assets/style_gallery/` 里的六套风格样例和 V3实例 全套总览。
 
 ### 阶段 1　收集材料（先问清再动手）
 
@@ -72,6 +72,8 @@ python3 scripts/style_gallery.py <本Skill目录> 样页目录 --content my_cont
 ```
 
 把每套风格的 2 × 2 拼图发给用户，附一句特点说明，请用户选定风格或提出调整；不满意就调整后再出一轮。
+
+用户选 V3实例 时，不必再逐页设计版式：复制 `assets/presets/v3_deck.py`，按其中 `DEMO` 的结构把开题报告内容和图片路径填进 `CONTENT`，运行 `python3 v3_deck.py <本Skill目录> 输出.pptx --content my_v3_content.py` 即得整套 17 页；页数或内容不同时删改对应页函数，保持相邻两页版式不同。
 
 ### 阶段 5　生成
 
@@ -110,12 +112,17 @@ python3 build_deck.py <本Skill目录> 输出.pptx
 | `scripts/extract_docx.py` | 提取开题报告文字、表格、图片 |
 | `scripts/outline_dump.py` | 往届 PPT 提纲与统计 |
 | `scripts/render_check.py` | 渲染逐页 PNG 与总览图 |
-| `scripts/style_gallery.py` | 风格样页：同一组内容按五套风格各出 4 张不同版式的样页并渲染拼图 |
+| `scripts/style_gallery.py` | 风格样页：同一组内容按六套风格各出 4 张不同版式的样页并渲染拼图 |
 | `scripts/omml/` | LaTeX 转 Office Math 编译器（来自 ppt-master，MIT） |
 | `assets/swust_proposal_template.pptx` | 西南科技大学开题答辩模板（五张骨架页） |
 | `assets/example_build.py` | 示例生成脚本（占位内容，演示学术极简规则与 L1 到 L9 版式，`--theme` 换风格） |
-| `assets/style_gallery/` | 五套风格的样页拼图（中性示例内容） |
+| `assets/presets/v3_deck.py` | V3实例 整套配方：17 页逐页版式，填入内容即可生成 |
+| `assets/style_gallery/` | 六套风格的样页拼图与 V3实例 全套 17 页总览（中性示例内容） |
+| `agents/openai.yaml` | Codex 界面元数据（显示名、简介、默认提示） |
 
 ## 运行环境
+
+本 Skill 遵循通用的 SKILL.md 格式，Claude（claude.ai、Claude Code）和 OpenAI Codex 都能直接使用。文中的 `scripts/`、`assets/`、`references/` 都指本 Skill 目录下的路径（Codex 个人安装位置为 `~/.agents/skills/master-proposal-ppt`，Claude Code 为 `~/.claude/skills/master-proposal-ppt`）；用户的开题材料和输出放在用户自己的工作目录。Windows 上把命令里的 `python3` 换成 `python`。
+
 
 Python 3.9+，`python-pptx`、`python-docx`、`lxml`、`Pillow`，风格样页的示例图需要 `matplotlib`；公式回退图需要 `pdflatex` 与 `pdftoppm`；渲染检查需要 LibreOffice。LibreOffice 不显示 Office Math，渲染图里看到的公式是 LaTeX 回退图，PowerPoint 中打开是可编辑公式。

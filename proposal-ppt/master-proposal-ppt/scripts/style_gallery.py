@@ -6,7 +6,9 @@
 每套风格内部 4 张页面的版式各不相同, 这正是整套 PPT 的样子: 规则统一, 版式按内容变化。
 
 用法:
-  python3 style_gallery.py <本Skill目录> <输出目录> [--styles 学术极简,期刊黑白,...] [--content my_content.py] [--render]
+  python3 style_gallery.py <本Skill目录> <输出目录> [--styles V3实例,学术极简,期刊黑白,...] [--content my_content.py] [--render]
+  V3实例 是整套配方型风格, 样页取自 assets/presets/v3_deck.py 生成的 17 页示例; 用自己的内容看效果时,
+  直接运行 v3_deck.py --content 自己的内容文件。
   --content 指向一个 python 文件, 里面定义与下方 DEMO 同结构的 CONTENT 字典 (用用户开题报告里的真实内容替换)。
   不给 --content 时用中性示例内容 (虚构课题, 只演示版式, 页面上标注 示例内容)。
   --render 需要 LibreOffice 与 pdftoppm, 输出 每套风格一张 2x2 拼图 PNG。
@@ -224,7 +226,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("skill_dir")
     ap.add_argument("out_dir")
-    ap.add_argument("--styles", default="学术极简,期刊黑白,浅色分区,深色重点,大字结论")
+    ap.add_argument("--styles", default="V3实例,学术极简,期刊黑白,浅色分区,深色重点,大字结论")
     ap.add_argument("--content", default=None)
     ap.add_argument("--template", default=None)
     ap.add_argument("--render", action="store_true")
@@ -241,6 +243,16 @@ def main():
     tpl = a.template or (skill / "assets" / "swust_proposal_template.pptx")
     made = []
     for style in a.styles.split(","):
+        if THEMES[style].get("preset"):
+            # 整套配方型风格: 用配方生成整套示例, 取有代表性的 4 页做样页
+            preset = runpy.run_path(str(skill / THEMES[style]["preset"]))
+            d = Deck(tpl)
+            d.set_theme(style)
+            p = out / f"风格样页_{style}.pptx"
+            preset["build"](d, preset["DEMO"], p, preset["_Img"](tmp))
+            made.append((style, p))
+            print("saved", p, "|", THEMES[style]["desc"])
+            continue
         d = Deck(tpl)
         th = d.set_theme(style)
         r = content["result"]
@@ -263,6 +275,8 @@ def main():
             pdf = next(rd.glob("*.pdf"))
             subprocess.run(["pdftoppm", "-r", "60", "-png", str(pdf), str(rd / "p")], check=True)
             ims = [Image.open(x) for x in sorted(rd.glob("p-*.png"))]
+            if THEMES[style].get("preset"):
+                ims = [ims[i] for i in (2, 4, 9, 13)]  # 研究背景、现状演进、研究一二、研究基础
             w, h = ims[0].size
             g = Image.new("RGB", (w * 2 + 12, h * 2 + 12), "white")
             for j, im in enumerate(ims[:4]):

@@ -2,6 +2,20 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [1.3.0] - 2026-11-18
+
+有用户反馈开题 V3 版的风格很好，希望作为可选方案；同时很多用户使用 Codex。
+
+### 新增
+- `assets/presets/v3_deck.py`：V3实例 整套配方，17 页逐页版式（图墙加因果、图加流程加四列难点、演进图示、三线表、整页大图、分栏细线、左图右步骤、两图加公式、左图右两段公式、左三行右图、三线表对比、左图右大数字、留白页、计划表），内容放在一个字典里，用 `--content` 换成自己的开题报告内容即可生成。示例内容为虚构课题，不含任何未公开的开题报告。
+- 风格 `V3实例` 加入 `THEMES` 与 `style_gallery.py`（默认排第一，推荐）；`assets/style_gallery/` 增加 V3实例 样页拼图和全套 17 页总览。
+- `agents/openai.yaml`：Codex 界面元数据（显示名、简介、默认提示）。
+- README：Codex 安装（`$skill-installer` 与手动复制到 `~/.agents/skills`）和三段可直接粘贴的调用指令（新做、直接用 V3实例、按修改意见改）。
+
+### 修改
+- SKILL.md：运行环境说明 Codex 与 Claude 通用、路径约定、Windows 用 `python`；规则 8 与阶段 4.5 加入 V3实例。
+- `references/08-aesthetics-and-style.md`：风格表加入 V3实例。
+
 ## [1.2.0] - 2026-11-18
 
 依据第二轮用户修改意见（存在的问题-V2）修订：第二版配色差、创新点页 AI 味重、字太小；公式要在备注里详细解释以防被问；改之前先确认需求、学习别人好的做法。另据用户要求：使用本 Skill 时要提供多种高质量、无 AI 味的风格案例供用户选择；选定风格后全篇统一，但不能页页一个样。修订前对照学习了 ppt-master、anthropics/skills 的 pptx 技能、academic-pptx-skill、MiniMax pptx-generator 和讨论 AI 幻灯片通病的文章。

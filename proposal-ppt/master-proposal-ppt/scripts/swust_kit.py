@@ -63,6 +63,9 @@ def _rgb(c):
 THEMES = {
     "学术极简": dict(NAVY="274F7F", INK="1F2933", MUTE="6B7280", RULE="C8D0DB", ACC="A33B2B", TINT="F1F4F8", head=22, body=18, panels="none", hl="274F7F", gap="A33B2B",
                  desc="模板深蓝做标题, 正文深灰, 浅灰细线分区, 暗红只标研究空白"),
+    "V3实例": dict(NAVY="274F7F", INK="1F2933", MUTE="6B7280", RULE="C8D0DB", ACC="A33B2B", TINT="F1F4F8", head=22, body=18, panels="none", hl="274F7F", gap="A33B2B",
+                 preset="assets/presets/v3_deck.py",
+                 desc="用户反馈很好的一套完整做法: 学术极简规则, 外加 17 页逐页版式配方 (图墙、演进图示、三线表、左图右步骤、图加公式、大数字等), 照着填内容即可"),
     "期刊黑白": dict(NAVY="1F2933", INK="1F2933", MUTE="6B7280", RULE="BFC5CC", ACC="256DB7", TINT="F3F4F6", head=22, body=18, panels="none", hl="256DB7", gap="1F2933",
                  desc="近黑标题, 全篇黑白灰, 只用模板亮蓝标本课题, 像期刊插图一样克制"),
     "浅色分区": dict(NAVY="274F7F", INK="1F2933", MUTE="5B6675", RULE="D5DCE5", ACC="B5651D", TINT="EAF0F6", head=22, body=18, panels="tint", hl="274F7F", gap="B5651D",

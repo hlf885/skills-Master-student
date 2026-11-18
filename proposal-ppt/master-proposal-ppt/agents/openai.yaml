@@ -1,0 +1,8 @@
+interface:
+  display_name: "开题答辩 PPT"
+  short_description: "依据定稿的中文硕士开题报告，在学校模板上生成可编辑、无 AI 味的开题答辩 PPT，先出风格样页供选择"
+  brand_color: "#274F7F"
+  default_prompt: "请按 master-proposal-ppt 的完整流程，依据我的开题报告制作开题答辩 PPT：先确认需求和逐页规划，再出风格样页让我挑，选定后生成整套并渲染检查。"
+
+policy:
+  allow_implicit_invocation: true

@@ -2,6 +2,11 @@
 
 记录跨 Skill 的变化；单个 Skill 的细节见其目录下的 `CHANGELOG.md`。
 
+## 2026-11-18（三）
+
+### 修改
+- `proposal-ppt/master-proposal-ppt` 升至 v1.3.0：新增 V3实例 风格（用户反馈很好的 17 页逐页版式配方，`assets/presets/v3_deck.py`，示例为虚构课题）；新增 Codex 支持（`agents/openai.yaml`、README 中的 Codex 安装与调用指令）。详见该 Skill 的 `CHANGELOG.md`。
+
 ## 2026-11-18（二）
 
 ### 修改

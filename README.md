@@ -13,7 +13,7 @@
 | [proposal](proposal/README.md) | [`master-proposal`](proposal/master-proposal/README.md) | ✅ v1.0.0 | 开题报告：资料收集与追问、立项必要性、层层递进的研究现状、研究内容/目标/关键问题、评估后的研究方案（Visio + MathType）、56–66 条 GB/T 7714 文献、去 AI 味、答辩通俗讲解稿 |
 | [mid-term](mid-term/README.md) | `master-midterm` | 🗓 规划中 | 中期检查报告：进展对照开题计划、阶段成果、存在问题与调整、后续计划 |
 | [thesis](thesis/README.md) | `master-thesis` | 🗓 规划中 | 学位论文：章节架构、各章写作、图表公式、参考文献、查重与送审前自查、答辩 |
-| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README.md) | ✅ v1.2.0 | 开题答辩 PPT：学习往届篇幅、抽取学校原生模板、多套风格样页供选择、依据开题报告逐页生成可编辑 PPT（可编辑公式）、渲染检查 |
+| [proposal-ppt](proposal-ppt/README.md) | [`master-proposal-ppt`](proposal-ppt/master-proposal-ppt/README.md) | ✅ v1.3.0 | 开题答辩 PPT：学习往届篇幅、抽取学校原生模板、多套风格样页供选择（含 V3实例 整套配方）、依据开题报告逐页生成可编辑 PPT（可编辑公式）、渲染检查 |
 | [mid-term-ppt](mid-term-ppt/README.md) | `master-midterm-ppt` | 🗓 规划中 | 中期检查答辩 PPT |
 | [thesis-ppt](thesis-ppt/README.md) | `master-thesis-ppt` | 🗓 规划中 | 学位论文答辩 PPT |
 
@@ -28,7 +28,7 @@ cp -r skills-Master-student/proposal/master-proposal ~/.claude/skills/
 ```
 
 - Claude Cowork / claude.ai：将 `proposal/master-proposal` 文件夹压缩为 zip，在 设置 → 功能 → Skills 中上传；
-- Codex：复制到 `%USERPROFILE%\.agents\skills\master-proposal\`，用 `$master-proposal` 调用。
+- Codex：在会话里运行 `$skill-installer install https://github.com/hlf885/skills-Master-student/tree/main/<项目>/<skill>`，或复制到 `~/.agents/skills/<skill>/`（Windows 为 `%USERPROFILE%\.agents\skills\`），用 `$<skill>` 调用；开题答辩 PPT 的 Codex 指令示例见 [master-proposal-ppt 的 README](proposal-ppt/master-proposal-ppt/README.md)。
 
 详见各 Skill 的 README。
 

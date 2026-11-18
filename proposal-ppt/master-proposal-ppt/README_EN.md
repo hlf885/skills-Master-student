@@ -12,18 +12,38 @@ Builds an editable Chinese master's thesis proposal defense deck (开题答辩 P
 - Plan and generate the six standard parts slide by slide;
 - Native, editable Office Math equations (compiler vendored from ppt-master) with image fallback;
 - Speaker notes on every slide with talk-time estimate (default 8 to 10 minutes), licensed real photos for the background slide, and a blank slide for personal achievements;
-- Style gallery first: five deck-wide styles rendered with the user's own content, the user picks one; then one consistent rule set across the deck while each slide's layout follows its content (no "AI look": no colored text bars, number circles, dashed boxes or red bold);
+- Style gallery first: six deck-wide styles (including V3实例, a complete 17-slide layout recipe users liked) rendered with the user's own content, the user picks one; then one consistent rule set across the deck while each slide's layout follows its content (no "AI look": no colored text bars, number circles, dashed boxes or red bold);
 - Equation slides carry a reference section in the notes (symbol definitions, design rationale, likely questions), excluded from talk time;
 - Render every slide to PNG plus contact sheets, with text overflow warnings.
 
 ## Install
 
+Plain SKILL.md format: works in Codex, Claude Code and claude.ai.
+
 ```bash
-cp -r skills-Master-student/proposal-ppt/master-proposal-ppt ~/.claude/skills/
-pip install python-pptx python-docx lxml pillow
+pip install python-pptx python-docx lxml pillow matplotlib
 ```
 
+**Codex** (inside a session):
+
+```text
+$skill-installer install https://github.com/hlf885/skills-Master-student/tree/main/proposal-ppt/master-proposal-ppt
+```
+
+or copy `proposal-ppt/master-proposal-ppt` into `~/.agents/skills/`, restart Codex, then invoke with `$master-proposal-ppt`.
+
+**Claude Code**: copy the folder into `~/.claude/skills/`. **claude.ai**: `python scripts/package_skill.py proposal-ppt/master-proposal-ppt` and upload the zip.
+
 LaTeX (`pdflatex`) and `pdftoppm` are needed for equation fallbacks; LibreOffice for render checks.
+
+## Usage (Codex)
+
+```text
+$master-proposal-ppt
+Build my proposal defense deck from <proposal.docx>. Past decks: <folder or none>. Talk length: <8 to 10 minutes>.
+Confirm the brief and the slide-by-slide plan first, show me the style gallery rendered with my own content (or use V3实例),
+then generate, write speaker notes with a reference section for every equation, and render-check every slide.
+```
 
 ## Credits
 
